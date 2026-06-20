@@ -26,27 +26,20 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
 
   const handleLoadDemoSamples = () => {
     setSamples([...demoPunchydHeading.samples]);
-    setName('Twitter');
-    setDescription('Short-form social posts');
+    setName('Casual Posts');
+    setDescription('Short, punchy social writing');
   };
 
   const handleBuildFingerprint = async () => {
     setError('');
     const nonEmpty = samples.filter(s => s.trim().length > 0);
-    if (nonEmpty.length < 3) {
-      setError('Paste at least 3 writing samples');
-      return;
-    }
+    if (nonEmpty.length < 3) { setError('Paste at least 3 writing samples'); return; }
     setLoading(true);
     try {
       const profile = buildProfile(nonEmpty);
       setPreviewProfile(profile);
       setStep('preview');
-    } catch {
-      setError('Error analyzing samples. Try again.');
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError('Error analyzing samples. Try again.'); } finally { setLoading(false); }
   };
 
   const handleSave = async () => {
@@ -57,16 +50,8 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
       const nonEmpty = samples.filter(s => s.trim().length > 0);
       await createHeading(name, description, nonEmpty);
       onProfileCreated();
-      setSamples(['', '', '']);
-      setName('');
-      setDescription('');
-      setPreviewProfile(null);
-      setStep('samples');
-    } catch {
-      setError('Error saving profile. Try again.');
-    } finally {
-      setLoading(false);
-    }
+      setSamples(['', '', '']); setName(''); setDescription(''); setPreviewProfile(null); setStep('samples');
+    } catch { setError('Error saving. Try again.'); } finally { setLoading(false); }
   };
 
   const profile = activeHeading?.profile;
@@ -74,134 +59,114 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
   const sampleCount = activeHeading?.samples.length || 0;
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-6 space-y-8">
-      {/* Active profile display */}
+    <div className="max-w-4xl mx-auto py-8 px-6 space-y-8 tab-content-enter">
       {profile && activeHeading ? (
         <>
-          <div className="flex items-start justify-between">
+          {/* Active profile header */}
+          <div className="flex items-start justify-between animate-fade-in">
             <div>
-              <h2 className="text-2xl font-fraunces font-bold text-slate-text">{activeHeading.name}</h2>
-              <p className="text-sm text-slate-text/50 font-mono mt-1">{activeHeading.description}</p>
+              <h2 className="text-2xl font-bold text-ink-text">{activeHeading.name}</h2>
+              <p className="text-sm text-slate-text mt-1">{activeHeading.description}</p>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-signal-cyan/10 border border-signal-cyan/20 rounded">
-              <span className="text-xs font-mono text-signal-cyan">
+            <div className="flex items-center gap-2 px-3 py-2 bg-signal-cyan/10 rounded-xl">
+              <span className="text-xs text-signal-cyan font-medium">
                 Based on {sampleCount} sample{sampleCount !== 1 ? 's' : ''}
               </span>
               {sampleCount < 5 && (
-                <span className="text-xs font-mono text-slate-text/40">
-                  — add more for a sharper read
-                </span>
+                <span className="text-xs text-slate-text/50"> — add more for a sharper read</span>
               )}
             </div>
           </div>
 
           {/* Voice summary */}
-          <div className="card-panel">
-            <h3 className="text-xs font-mono text-slate-text/50 uppercase tracking-wider mb-3">Voice Summary</h3>
-            <div className="space-y-2">
+          <div className="card-panel animate-fade-in" style={{ animationDelay: '0.05s' }}>
+            <h3 className="text-sm font-semibold text-ink-text mb-3">Your voice, in a nutshell</h3>
+            <div className="space-y-2.5">
               {summary.map((bullet, i) => (
-                <p key={i} className="text-sm text-slate-text/80 font-spectral flex items-start gap-2">
-                  <span className="text-brass mt-0.5">&#9670;</span> {bullet}
+                <p key={i} className="text-sm text-slate-text flex items-start gap-2.5">
+                  <span className="text-brass mt-0.5 text-xs">&#9679;</span> {bullet}
                 </p>
               ))}
             </div>
           </div>
 
-          {/* Fingerprint cards grid */}
+          {/* Fingerprint cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <FingerprintCard
-              title="Sentence Rhythm"
-              icon="~"
-              stats={[
-                { label: 'Avg length', value: `${Math.round(profile.sentenceLength.mean)} words` },
+            {[
+              { title: 'Sentence Rhythm', stats: [
+                { label: 'Average length', value: `${Math.round(profile.sentenceLength.mean)} words` },
                 { label: 'Variation', value: profile.sentenceLength.stdDev > 8 ? 'Wide swings' : profile.sentenceLength.stdDev < 3 ? 'Very consistent' : 'Natural' },
-                { label: 'Total counted', value: `${profile.sentenceCount} sentences` },
-              ]}
-            />
-            <FingerprintCard
-              title="Punctuation Habits"
-              icon="."
-              stats={[
-                { label: 'Em-dashes', value: `${profile.punctuation.emDashes.toFixed(1)} / 100w` },
-                { label: 'Exclamations', value: `${profile.punctuation.exclamationPoints.toFixed(1)} / 100w` },
-                { label: 'Questions', value: `${profile.punctuation.questionMarks.toFixed(1)} / 100w` },
-                { label: 'Commas', value: `${(profile.punctuation.commas || 0).toFixed(1)} / 100w` },
-              ]}
-            />
-            <FingerprintCard
-              title="Vocabulary"
-              icon="#"
-              stats={[
-                { label: 'Lexical diversity', value: `${Math.round(profile.lexicalDiversity.mean * 100)}%` },
-                { label: 'Uniqueness', value: `${Math.round((profile.lexicalUniqueness || 0) * 100)}%` },
-                { label: 'Contraction rate', value: `${Math.round(profile.contractionRate * 100)}%` },
-              ]}
-            />
-            <FingerprintCard
-              title="Common Phrases"
-              icon="&ldquo;"
-              stats={(profile.topPhrases || []).slice(0, 4).map(p => ({ label: '', value: `"${p}"` }))}
-            />
-            <FingerprintCard
-              title="Filler Words"
-              icon="..."
-              stats={[
-                { label: 'Frequency', value: `${profile.fillerWords.frequency.toFixed(1)} / 100w` },
-                { label: 'Detected', value: profile.fillerWords.frequency > 5 ? 'Frequent filler usage' : profile.fillerWords.frequency > 2 ? 'Moderate usage' : 'Minimal fillers' },
-              ]}
-            />
-            <FingerprintCard
-              title="Paragraph Rhythm"
-              icon="&para;"
-              stats={[
-                { label: 'Avg length', value: `${Math.round(profile.paragraphLength.mean)} words` },
-                { label: 'Paragraphs', value: `${profile.paragraphCount || '—'}` },
-                { label: 'AI cliches', value: `${profile.aiClicheCount || 0} found` },
-              ]}
-            />
+              ]},
+              { title: 'Punctuation', stats: [
+                { label: 'Em-dashes', value: `${profile.punctuation.emDashes.toFixed(1)} per 100 words` },
+                { label: 'Exclamations', value: `${profile.punctuation.exclamationPoints.toFixed(1)} per 100 words` },
+                { label: 'Questions', value: `${profile.punctuation.questionMarks.toFixed(1)} per 100 words` },
+              ]},
+              { title: 'Vocabulary', stats: [
+                { label: 'Diversity', value: `${Math.round(profile.lexicalDiversity.mean * 100)}%` },
+                { label: 'Contractions', value: `${Math.round(profile.contractionRate * 100)}% of the time` },
+              ]},
+              { title: 'Common Phrases', stats: (profile.topPhrases || []).slice(0, 4).map(p => ({ label: '', value: `"${p}"` })) },
+              { title: 'Filler Words', stats: [
+                { label: 'Frequency', value: `${profile.fillerWords.frequency.toFixed(1)} per 100 words` },
+                { label: 'Style', value: profile.fillerWords.frequency > 5 ? 'Frequent — part of your voice' : profile.fillerWords.frequency > 2 ? 'Moderate' : 'Minimal' },
+              ]},
+              { title: 'Paragraph Rhythm', stats: [
+                { label: 'Average length', value: `${Math.round(profile.paragraphLength.mean)} words` },
+                { label: 'AI cliches found', value: `${profile.aiClicheCount || 0}` },
+              ]},
+            ].map((card, i) => (
+              <div key={i} className="card-panel animate-fade-in" style={{ animationDelay: `${0.05 * (i + 1)}s`, animationFillMode: 'both' }}>
+                <h4 className="text-xs font-semibold text-ink-text/70 mb-3">{card.title}</h4>
+                <div className="space-y-2">
+                  {card.stats.map((stat, j) => (
+                    <div key={j} className="flex items-center justify-between">
+                      {stat.label && <span className="text-xs text-slate-text/60">{stat.label}</span>}
+                      <span className={`text-sm text-ink-text ${!stat.label ? 'w-full' : ''}`}>{stat.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="border-t border-slate-text/10 pt-6">
-            <h3 className="text-xs font-mono text-slate-text/50 uppercase tracking-wider mb-3">Writing Samples</h3>
+          {/* Samples */}
+          <div className="border-t border-card-border pt-6">
+            <h3 className="text-sm font-semibold text-ink-text mb-3">Writing samples</h3>
             <div className="space-y-3">
               {activeHeading.samples.map((sample, i) => (
                 <div key={i} className="card-panel">
-                  <p className="text-xs font-mono text-slate-text/40 mb-1">Sample {i + 1}</p>
-                  <p className="text-sm text-slate-text/70 font-spectral line-clamp-3">{sample}</p>
+                  <p className="text-xs text-slate-text/40 mb-1">Sample {i + 1}</p>
+                  <p className="text-sm text-slate-text line-clamp-3">{sample}</p>
                 </div>
               ))}
             </div>
           </div>
         </>
       ) : (
-        /* Empty state / Create new profile */
-        <div className="text-center py-16 space-y-6">
-          <svg width="80" height="80" viewBox="0 0 80 80" className="mx-auto text-slate-text/15">
-            <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="40" y1="40" x2="40" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="40" cy="40" r="4" fill="currentColor" />
-            <text x="40" y="62" textAnchor="middle" fill="currentColor" fontSize="8" fontFamily="IBM Plex Mono">
-              TRUE NORTH
-            </text>
-          </svg>
-          <div>
-            <h2 className="text-xl font-fraunces font-bold text-slate-text mb-2">No voice profile yet</h2>
-            <p className="text-sm text-slate-text/50 font-spectral">Paste your writing samples below, or load demo data to try Drift instantly.</p>
+        <div className="text-center py-16 space-y-6 animate-fade-in">
+          <div className="w-20 h-20 mx-auto rounded-2xl bg-warm-bg flex items-center justify-center">
+            <span className="text-3xl">&#128172;</span>
           </div>
-          <button onClick={() => { onLoadDemo(); }} className="btn-primary">
-            Load Demo Voice
-          </button>
+          <div>
+            <h2 className="text-xl font-bold text-ink-text mb-2">No voice profile yet</h2>
+            <p className="text-sm text-slate-text max-w-md mx-auto">
+              A voice profile is your writing fingerprint — built from samples of your real writing.
+              Drift uses it to spot where AI drafts don't sound like you.
+            </p>
+          </div>
+          <button onClick={onLoadDemo} className="btn-primary">Try with demo samples</button>
         </div>
       )}
 
-      {/* Create new profile section */}
-      <div className="border-t border-slate-text/10 pt-8">
-        <h3 className="text-lg font-fraunces font-bold text-slate-text mb-4">
-          {activeHeading ? 'Create Another Profile' : 'Create Your Voice Profile'}
+      {/* Create new profile */}
+      <div className="border-t border-card-border pt-8">
+        <h3 className="text-lg font-bold text-ink-text mb-4">
+          {activeHeading ? 'Create another profile' : 'Build your voice profile'}
         </h3>
 
         {error && (
-          <div className="mb-4 p-3 bg-alert-coral/10 border border-alert-coral/30 text-alert-coral text-sm rounded font-mono">
+          <div className="mb-4 p-3 bg-alert-coral/5 border border-alert-coral/20 text-alert-coral text-sm rounded-xl animate-fade-in">
             {error}
           </div>
         )}
@@ -209,106 +174,69 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
         {step === 'samples' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-slate-text/60 font-spectral">
-                Paste 3+ examples of your actual writing — tweets, newsletters, scripts, anything.
-              </p>
-              <button onClick={handleLoadDemoSamples} className="btn-ghost text-xs">
-                Load Demo Samples
-              </button>
+              <p className="text-sm text-slate-text">Paste 3 or more examples of your real writing.</p>
+              <button onClick={handleLoadDemoSamples} className="btn-ghost text-xs">Load demo samples</button>
             </div>
-
             {samples.map((sample, i) => (
               <div key={i}>
-                <label className="text-xs font-mono text-slate-text/40 uppercase">Sample {i + 1}</label>
-                <textarea
-                  value={sample}
-                  onChange={(e) => handleSampleChange(i, e.target.value)}
+                <label className="text-xs font-medium text-slate-text/50">Sample {i + 1}</label>
+                <textarea value={sample} onChange={(e) => handleSampleChange(i, e.target.value)}
                   placeholder="Paste your writing here..."
-                  className="w-full h-24 mt-1 p-3 bg-ink-navy/50 text-slate-text font-spectral text-sm border border-slate-text/10 rounded focus:outline-none focus:border-brass resize-none"
-                />
+                  className="w-full h-24 mt-1 p-3 bg-chart-paper text-ink-text text-sm border border-card-border rounded-xl focus:outline-none focus:border-brass resize-none" />
               </div>
             ))}
-
             <div className="flex items-center gap-3">
               {samples.length < 10 && (
-                <button onClick={() => setSamples([...samples, ''])} className="btn-ghost text-xs">
-                  + Add another sample
-                </button>
+                <button onClick={() => setSamples([...samples, ''])} className="btn-ghost text-xs">+ Add another</button>
               )}
               {samples.length > 3 && (
-                <button onClick={() => setSamples(samples.slice(0, -1))} className="text-xs text-alert-coral/60 hover:text-alert-coral font-mono">
-                  - Remove last
-                </button>
+                <button onClick={() => setSamples(samples.slice(0, -1))} className="text-xs text-alert-coral/60 hover:text-alert-coral">- Remove last</button>
               )}
             </div>
-
             <button onClick={handleBuildFingerprint} disabled={loading} className="btn-primary w-full disabled:opacity-50">
-              {loading ? 'Analyzing...' : 'Build Voice Fingerprint'}
+              {loading ? 'Analyzing...' : 'Build voice fingerprint'}
             </button>
           </div>
         )}
 
         {step === 'preview' && previewProfile && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in">
             <div className="card-panel space-y-2">
               {getProfileSummary(previewProfile).map((bullet, i) => (
-                <p key={i} className="text-sm text-slate-text/80 font-spectral">
-                  <span className="text-brass mr-2">&#9670;</span>{bullet}
+                <p key={i} className="text-sm text-slate-text">
+                  <span className="text-brass mr-2">&#9679;</span>{bullet}
                 </p>
               ))}
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep('samples')} className="btn-secondary flex-1">Back</button>
-              <button onClick={() => setStep('name')} className="btn-primary flex-1">Continue</button>
+              <button onClick={() => setStep('name')} className="btn-primary flex-1">Looks right</button>
             </div>
           </div>
         )}
 
         {step === 'name' && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in">
             <div>
-              <label className="text-xs font-mono text-slate-text/40 uppercase">Profile Name</label>
+              <label className="text-xs font-medium text-slate-text/50">Profile name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., Twitter, Newsletter, YouTube Script"
-                className="w-full mt-1 px-3 py-2 bg-ink-navy/50 text-slate-text font-spectral border border-slate-text/10 rounded focus:outline-none focus:border-brass" />
+                placeholder="e.g., Casual Posts, YouTube Scripts"
+                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-xl focus:outline-none focus:border-brass" />
             </div>
             <div>
-              <label className="text-xs font-mono text-slate-text/40 uppercase">What's this voice for?</label>
+              <label className="text-xs font-medium text-slate-text/50">What's this voice for?</label>
               <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g., Short-form social media posts"
-                className="w-full mt-1 px-3 py-2 bg-ink-navy/50 text-slate-text font-spectral border border-slate-text/10 rounded focus:outline-none focus:border-brass" />
+                placeholder="e.g., Short social media posts"
+                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-xl focus:outline-none focus:border-brass" />
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep('preview')} className="btn-secondary flex-1">Back</button>
               <button onClick={handleSave} disabled={loading} className="btn-primary flex-1 disabled:opacity-50">
-                {loading ? 'Saving...' : 'Save This Voice'}
+                {loading ? 'Saving...' : 'Save this voice'}
               </button>
             </div>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-function FingerprintCard({ title, icon, stats }: {
-  title: string;
-  icon: string;
-  stats: Array<{ label: string; value: string }>;
-}) {
-  return (
-    <div className="card-panel">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-brass font-mono text-lg">{icon}</span>
-        <h4 className="text-xs font-mono text-slate-text/50 uppercase tracking-wider">{title}</h4>
-      </div>
-      <div className="space-y-2">
-        {stats.map((stat, i) => (
-          <div key={i} className="flex items-center justify-between">
-            {stat.label && <span className="text-xs font-mono text-slate-text/40">{stat.label}</span>}
-            <span className={`text-sm font-spectral text-slate-text/80 ${!stat.label ? 'w-full' : ''}`}>{stat.value}</span>
-          </div>
-        ))}
       </div>
     </div>
   );

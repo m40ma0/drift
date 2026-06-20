@@ -66,22 +66,21 @@ export function CompassGauge({ drift, size = 220 }: CompassGaugeProps) {
   }, [animatedDrift, radius, centerX, centerY]);
 
   const driftPercent = Math.round((Math.abs(animatedDrift) / 45) * 100);
-  const color = driftPercent < 30 ? '#4FD8C4' : driftPercent < 60 ? '#C98A3E' : '#E2604F';
+  const color = driftPercent < 30 ? 'rgb(var(--c-signal-cyan))' : driftPercent < 60 ? 'rgb(var(--c-brass))' : 'rgb(var(--c-alert-coral))';
 
   return (
     <div className="flex flex-col items-center gap-2">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
-        <circle cx={centerX} cy={centerY} r={radius * 0.15} fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+        <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="rgb(var(--c-ink-text))" strokeWidth="0.5" opacity="0.1" />
 
         {ticks.map((tick, i) => (
           <line key={i} x1={tick.x1} y1={tick.y1} x2={tick.x2} y2={tick.y2}
-            stroke="currentColor" strokeWidth={tick.isMajor ? 1.5 : 0.8}
-            opacity={tick.isMajor ? 0.5 : 0.25} />
+            stroke="rgb(var(--c-ink-text))" strokeWidth={tick.isMajor ? 1.5 : 0.8}
+            opacity={tick.isMajor ? 0.3 : 0.12} />
         ))}
 
         {trailPoints.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="1.5" fill="#4FD8C4" opacity={p.opacity} />
+          <circle key={i} cx={p.x} cy={p.y} r="1.5" fill="rgb(var(--c-signal-cyan))" opacity={p.opacity} />
         ))}
 
         <line x1={centerX} y1={centerY} x2={needleX} y2={needleY}
@@ -94,8 +93,8 @@ export function CompassGauge({ drift, size = 220 }: CompassGaugeProps) {
           {driftPercent}%
         </text>
         <text x={centerX} y={centerY + radius * 0.55 + size * 0.06} textAnchor="middle"
-          className="font-mono" fill="currentColor" opacity="0.4" fontSize={size * 0.04}>
-          DRIFT
+          fill="rgb(var(--c-slate-text))" opacity="0.5" fontSize={size * 0.04} fontFamily="Poppins">
+          drift
         </text>
       </svg>
     </div>

@@ -2,8 +2,8 @@ import { Heading, saveHeading } from './headings';
 
 export const demoPunchydHeading: Heading = {
   id: 'demo_punchy_voice',
-  name: 'Twitter',
-  description: 'Short-form social posts',
+  name: 'Casual Posts',
+  description: 'Short, punchy social writing — tweets, captions, quick takes',
   samples: [
     `I love this. It's so good. Really great. Who knew? Not me. But honestly, it works. And it's fast. Super fast. Incredible, honestly.`,
     `Just finished the most chaotic sprint ever. But we shipped. We actually shipped. The team crushed it. Zero regrets. Well, maybe like three regrets, but who's counting?`,
@@ -32,8 +32,8 @@ export const demoPunchydHeading: Heading = {
 
 export const demoNewsletterHeading: Heading = {
   id: 'demo_newsletter_voice',
-  name: 'Newsletter',
-  description: 'Long-form essays and analysis',
+  name: 'Thoughtful Essays',
+  description: 'Longer writing — newsletters, blog posts, reflections',
   samples: [
     `The way we express ourselves through written word has fundamentally changed over the past decade. Consider the implications of this shift—it affects everything from how we think to how we connect with others. This matters more than we realize.`,
     `There's a quiet revolution happening in how creators think about their craft. Not the flashy kind with listicles and viral moments, but the deep kind where people are asking harder questions about what they actually want to say and why.`,
