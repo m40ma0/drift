@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@6..72,400;6..72,600;6..72,700&family=Spectral:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background: #101826;
+  color: #C9D3DC;
+  font-family: 'Spectral', serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+}
+
+code, pre, .font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #C98A3E;
+  outline-offset: 2px;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  svg line,
+  svg circle,
+  svg path {
+    transition: none !important;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection colors */
+::selection {
+  background-color: #C98A3E;
+  color: #101826;
+}
+
+::-moz-selection {
+  background-color: #C98A3E;
+  color: #101826;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #101826;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C9D3DC;
+  border-radius: 4px;
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.5;
+}
