@@ -1,8 +1,5 @@
-import { Heading } from './headings';
+import { Heading, saveHeading } from './headings';
 
-/**
- * Pre-baked demo heading with realistic sample data
- */
 export const demoPunchydHeading: Heading = {
   id: 'demo_punchy_voice',
   name: 'Twitter',
@@ -13,48 +10,21 @@ export const demoPunchydHeading: Heading = {
     `Hot take: good design is invisible. You don't notice it. You just feel it. If you're noticing the design, something went wrong. Anyway here's a thread about that.`,
   ],
   profile: {
-    lexicalDiversity: {
-      mean: 0.52,
-      stdDev: 0.08,
-    },
-    sentenceLength: {
-      mean: 9.8,
-      stdDev: 6.2,
-    },
+    lexicalDiversity: { mean: 0.52, stdDev: 0.08 },
+    sentenceLength: { mean: 9.8, stdDev: 6.2 },
     punctuation: {
-      emDashes: 2.1,
-      semicolons: 0.5,
-      exclamationPoints: 18.3,
-      questionMarks: 5.4,
-      ellipses: 3.2,
+      emDashes: 2.1, semicolons: 0.5, exclamationPoints: 18.3,
+      questionMarks: 5.4, ellipses: 3.2, commas: 8.2, colons: 1.4, parentheses: 0.6,
     },
-    fillerWords: {
-      frequency: 8.1,
-      words: [
-        'actually',
-        'honestly',
-        'basically',
-        'literally',
-        'just',
-        'so',
-        'like',
-        'kind of',
-        'sort of',
-        'i mean',
-        'you know',
-      ],
-    },
-    sentenceOpeners: {
-      coordinatingConjunctions: 22,
-      questions: 8,
-      numbers: 2,
-      other: 68,
-    },
+    fillerWords: { frequency: 8.1, words: ['actually', 'honestly', 'basically', 'literally', 'just', 'so', 'like', 'kind of', 'sort of', 'i mean', 'you know'] },
+    sentenceOpeners: { coordinatingConjunctions: 22, questions: 8, numbers: 2, other: 68 },
     contractionRate: 0.82,
-    paragraphLength: {
-      mean: 45,
-      stdDev: 18,
-    },
+    paragraphLength: { mean: 45, stdDev: 18 },
+    topPhrases: ['hot take', 'zero regrets', 'who knew', 'crushed it', 'so good'],
+    aiClicheCount: 0,
+    lexicalUniqueness: 0.58,
+    sentenceCount: 21,
+    paragraphCount: 3,
   },
   createdAt: Date.now() - 86400000,
   updatedAt: Date.now() - 86400000,
@@ -70,64 +40,35 @@ export const demoNewsletterHeading: Heading = {
     `I've been thinking about authenticity a lot lately. What does it mean to be authentic online? Is it even possible when there's always an audience? These questions don't have easy answers, but wrestling with them is what makes the work worthwhile.`,
   ],
   profile: {
-    lexicalDiversity: {
-      mean: 0.68,
-      stdDev: 0.06,
-    },
-    sentenceLength: {
-      mean: 18.2,
-      stdDev: 4.8,
-    },
+    lexicalDiversity: { mean: 0.68, stdDev: 0.06 },
+    sentenceLength: { mean: 18.2, stdDev: 4.8 },
     punctuation: {
-      emDashes: 8.4,
-      semicolons: 3.2,
-      exclamationPoints: 2.1,
-      questionMarks: 4.8,
-      ellipses: 0.8,
+      emDashes: 8.4, semicolons: 3.2, exclamationPoints: 2.1,
+      questionMarks: 4.8, ellipses: 0.8, commas: 14.6, colons: 2.1, parentheses: 1.2,
     },
-    fillerWords: {
-      frequency: 2.3,
-      words: [
-        'actually',
-        'honestly',
-        'basically',
-        'literally',
-        'just',
-        'so',
-        'like',
-        'kind of',
-        'sort of',
-        'i mean',
-        'you know',
-      ],
-    },
-    sentenceOpeners: {
-      coordinatingConjunctions: 8,
-      questions: 6,
-      numbers: 3,
-      other: 83,
-    },
+    fillerWords: { frequency: 2.3, words: ['actually', 'honestly', 'basically', 'literally', 'just', 'so', 'like', 'kind of', 'sort of', 'i mean', 'you know'] },
+    sentenceOpeners: { coordinatingConjunctions: 8, questions: 6, numbers: 3, other: 83 },
     contractionRate: 0.64,
-    paragraphLength: {
-      mean: 72,
-      stdDev: 22,
-    },
+    paragraphLength: { mean: 72, stdDev: 22 },
+    topPhrases: ['what does it mean', 'harder questions', 'quiet revolution', 'think about'],
+    aiClicheCount: 0,
+    lexicalUniqueness: 0.71,
+    sentenceCount: 9,
+    paragraphCount: 3,
   },
   createdAt: Date.now() - 172800000,
   updatedAt: Date.now() - 172800000,
 };
 
-/**
- * Example AI-polished draft that drifts from the punchy voice
- */
 export const demoAIDraft = `This innovative platform represents a paradigm shift in how we approach digital communication. The sophisticated algorithms enable unprecedented levels of personalization and engagement. Furthermore, the implementation demonstrates a commitment to both accessibility and performance optimization. We believe that our comprehensive solutions will significantly enhance user satisfaction metrics across all key performance indicators.`;
 
-/**
- * Load demo data into IndexedDB
- */
+export const demoCreatorDraft = `I've been playing with this thing for a week and honestly? It just works. Not in the "it checks all the boxes" way—more like it actually gets out of your way and lets you write. The team behind it clearly cares about the craft. That matters more than any feature list.`;
+
+export const demoCompareAI = `In today's fast-paced world, effective communication has become more important than ever. Organizations must leverage cutting-edge technology to streamline their messaging and optimize engagement across all channels. Furthermore, the implementation of comprehensive solutions facilitates unprecedented levels of personalization. We believe these innovative approaches will transform how stakeholders interact with digital content, driving significant impact across key performance indicators.`;
+
+export const demoCompareCreator = `Here's the thing about good communication—it doesn't need to sound smart. It needs to sound like you. I've watched so many creators lose their voice trying to sound "professional" and honestly? The best posts I've ever written were the ones where I just talked like a person. No jargon. No filler. Just real thoughts, written the way I'd say them out loud.`;
+
 export async function loadDemoData() {
-  const { saveHeading } = await import('./headings');
-  
   try {
     await saveHeading(demoPunchydHeading);
     await saveHeading(demoNewsletterHeading);

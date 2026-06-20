@@ -1,160 +1,103 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 interface CompassGaugeProps {
-  drift: number; // degrees, -45 to +45
+  drift: number;
+  size?: number;
 }
 
-export function CompassGauge({ drift }: CompassGaugeProps) {
+export function CompassGauge({ drift, size = 220 }: CompassGaugeProps) {
   const [animatedDrift, setAnimatedDrift] = useState(drift);
-  const size = 280;
-  const radius = 100;
+  const radius = size * 0.36;
   const centerX = size / 2;
   const centerY = size / 2;
 
-  // Smooth animation: spring-like transition
   useEffect(() => {
     const target = drift;
-    const current = animatedDrift;
-    const diff = target - current;
-
-    if (Math.abs(diff) < 0.5) {
+    if (Math.abs(target - animatedDrift) < 0.5) {
       setAnimatedDrift(target);
       return;
     }
-
-    const frame = () => {
+    const interval = setInterval(() => {
       setAnimatedDrift((prev) => {
-        const delta = (target - prev) * 0.15; // cubic-bezier-like easing
+        const delta = (target - prev) * 0.15;
+        if (Math.abs(delta) < 0.3) return target;
         return prev + delta;
       });
-    };
-
-    const interval = setInterval(frame, 16);
+    }, 16);
     return () => clearInterval(interval);
   }, [drift, animatedDrift]);
 
-  // Generate tick marks for compass face
   const ticks = useMemo(() => {
-    const tickArray = [];
+    const arr = [];
     for (let i = -45; i <= 45; i += 5) {
       const angle = i * (Math.PI / 180);
-      const x1 = centerX + (radius - 8) * Math.cos(angle - Math.PI / 2);
-      const y1 = centerY + (radius - 8) * Math.sin(angle - Math.PI / 2);
-      const x2 = centerX + radius * Math.cos(angle - Math.PI / 2);
-      const y2 = centerY + radius * Math.sin(angle - Math.PI / 2);
-      tickArray.push({ x1, y1, x2, y2, angle: i });
+      const isMajor = i % 15 === 0;
+      const innerR = radius - (isMajor ? 10 : 6);
+      arr.push({
+        x1: centerX + innerR * Math.cos(angle - Math.PI / 2),
+        y1: centerY + innerR * Math.sin(angle - Math.PI / 2),
+        x2: centerX + radius * Math.cos(angle - Math.PI / 2),
+        y2: centerY + radius * Math.sin(angle - Math.PI / 2),
+        angle: i,
+        isMajor,
+      });
     }
-    return tickArray;
-  }, []);
+    return arr;
+  }, [size, radius, centerX, centerY]);
 
-  // Needle angle (0° = center/true north, ±45° = max drift)
   const needleAngle = animatedDrift * (Math.PI / 180);
-  const needleLength = 70;
+  const needleLength = radius * 0.7;
   const needleX = centerX + needleLength * Math.sin(needleAngle);
   const needleY = centerY - needleLength * Math.cos(needleAngle);
 
-  // Trail (recent history of needle position) - fade arc
   const trailPoints = useMemo(() => {
     const points = [];
-    for (let i = 0; i < 20; i++) {
-      const offset = (i / 20) * 15; // degrees offset
+    for (let i = 0; i < 15; i++) {
+      const offset = (i / 15) * 12;
       const angle = (animatedDrift - offset) * (Math.PI / 180);
-      const trailRadius = radius - 15;
-      const x = centerX + trailRadius * Math.sin(angle);
-      const y = centerY - trailRadius * Math.cos(angle);
-      const opacity = (1 - i / 20) * 0.6;
-      points.push({ x, y, opacity });
+      const trailR = radius - 15;
+      points.push({
+        x: centerX + trailR * Math.sin(angle),
+        y: centerY - trailR * Math.cos(angle),
+        opacity: (1 - i / 15) * 0.5,
+      });
     }
     return points;
-  }, [animatedDrift]);
+  }, [animatedDrift, radius, centerX, centerY]);
 
-  // Cardinal labels
-  const labels = [
-    { angle: -45, label: 'High Drift' },
-    { angle: 0, label: 'True North' },
-    { angle: 45, label: 'High Drift' },
-  ];
+  const driftPercent = Math.round((Math.abs(animatedDrift) / 45) * 100);
+  const color = driftPercent < 30 ? '#4FD8C4' : driftPercent < 60 ? '#C98A3E' : '#E2604F';
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      className="filter drop-shadow-lg"
-    >
-      {/* Background circle */}
-      <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
+    <div className="flex flex-col items-center gap-2">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={centerX} cy={centerY} r={radius} fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
+        <circle cx={centerX} cy={centerY} r={radius * 0.15} fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
 
-      {/* Tick marks */}
-      {ticks.map((tick, i) => (
-        <g key={`tick-${i}`}>
-          <line
-            x1={tick.x1}
-            y1={tick.y1}
-            x2={tick.x2}
-            y2={tick.y2}
-            stroke="currentColor"
-            strokeWidth="1"
-            opacity={tick.angle % 15 === 0 ? 0.6 : 0.3}
-          />
-          {tick.angle % 15 === 0 && tick.angle !== 0 && (
-            <text
-              x={centerX + (radius + 18) * Math.cos((tick.angle - 90) * (Math.PI / 180))}
-              y={centerY + (radius + 18) * Math.sin((tick.angle - 90) * (Math.PI / 180))}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              className="text-xs font-mono"
-              fill="currentColor"
-              opacity="0.5"
-            >
-              {Math.abs(tick.angle)}°
-            </text>
-          )}
-        </g>
-      ))}
+        {ticks.map((tick, i) => (
+          <line key={i} x1={tick.x1} y1={tick.y1} x2={tick.x2} y2={tick.y2}
+            stroke="currentColor" strokeWidth={tick.isMajor ? 1.5 : 0.8}
+            opacity={tick.isMajor ? 0.5 : 0.25} />
+        ))}
 
-      {/* Trail arc (seismograph afterimage) */}
-      {trailPoints.map((point, i) => (
-        <circle
-          key={`trail-${i}`}
-          cx={point.x}
-          cy={point.y}
-          r="1.5"
-          fill="#4FD8C4"
-          opacity={point.opacity}
-        />
-      ))}
+        {trailPoints.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="1.5" fill="#4FD8C4" opacity={p.opacity} />
+        ))}
 
-      {/* Needle (compass pointer) */}
-      <g>
-        {/* Needle line */}
-        <line
-          x1={centerX}
-          y1={centerY}
-          x2={needleX}
-          y2={needleY}
-          stroke="#C98A3E"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
+        <line x1={centerX} y1={centerY} x2={needleX} y2={needleY}
+          stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+        <circle cx={needleX} cy={needleY} r="3.5" fill={color} />
+        <circle cx={centerX} cy={centerY} r="4" fill={color} />
 
-        {/* Needle tip */}
-        <circle cx={needleX} cy={needleY} r="4" fill="#C98A3E" />
-
-        {/* Center pivot */}
-        <circle cx={centerX} cy={centerY} r="5" fill="#C98A3E" />
-      </g>
-
-      {/* Center label */}
-      <text
-        x={centerX}
-        y={centerY + 45}
-        textAnchor="middle"
-        className="text-xs font-mono font-semibold"
-        fill="currentColor"
-      >
-        {animatedDrift.toFixed(1)}°
-      </text>
-    </svg>
+        <text x={centerX} y={centerY + radius * 0.55} textAnchor="middle"
+          className="font-mono" fill={color} fontSize={size * 0.07} fontWeight="600">
+          {driftPercent}%
+        </text>
+        <text x={centerX} y={centerY + radius * 0.55 + size * 0.06} textAnchor="middle"
+          className="font-mono" fill="currentColor" opacity="0.4" fontSize={size * 0.04}>
+          DRIFT
+        </text>
+      </svg>
+    </div>
   );
 }
