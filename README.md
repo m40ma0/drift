@@ -1,68 +1,93 @@
 # Drift — Your Voice, Unflattened
 
-> AI detectors ask if it was written by AI. **Drift asks if it still sounds like you.**
+> AI helps you write faster. **Drift makes sure it still sounds like you.**
 
-Drift is a voice-preservation writing tool for creators who use AI drafts but don't want their personal voice to flatten into generic AI writing. It measures your actual writing fingerprint, detects where AI flattened it, and rewrites only the drifted parts back into your voice.
+Drift is a voice-preservation studio for creators, students, and writers who use AI drafts but don't want their personal voice to flatten into generic AI writing. It builds a measurable fingerprint of your writing, detects where AI has flattened your voice, and helps restore only the parts that drifted.
 
-**Drift is not an AI detector. Drift is not an AI humanizer.** It is a creator tool that answers one question: *does this still sound like me?*
+**Drift is not an AI detector. Drift is not an AI humanizer.** It doesn't care whether AI wrote something. It cares whether it still sounds like the person it's supposed to sound like.
+
+For young creators, students, and writers who use AI but still want their work to sound like themselves.
+
+## How It Works
+
+1. **Paste your real writing** — Add 3+ samples. Drift builds your voice fingerprint.
+2. **Paste any draft** — AI-generated, co-written, edited by someone else. Drift doesn't judge the source.
+3. **See where your voice drifted** — Every sentence is scored. Green = aligned. Yellow = slight drift. Red = heavy drift. Each flagged sentence shows specific reasons.
+4. **Restore your voice** — Click "Restore my voice" to get rewrite suggestions that match your fingerprint. See a Voice Receipt proving what changed.
 
 ## Features
 
-### Editor
-Live writing surface with sentence-by-sentence drift analysis. Paste a draft, see where your voice disappeared, and restore it.
-- Real-time drift score (0-100)
-- Sentence highlighting: aligned / slight drift / heavy drift
+### Editor (Default Tab)
+The first thing you see. Includes a guided demo strip: "Try Drift in 30 seconds" with step-by-step buttons.
+- Real-time drift score (0–100)
+- Sentence-level highlighting by severity
 - Drift reasons per sentence (rhythm, vocabulary, punctuation, AI-cliche)
-- "Restore my voice" rewrite suggestions
-- Voice Lock toggle (warns when rewrites over-polish)
-- Voice Receipt showing what changed and why
+- "Restore my voice" rewrite suggestions (mock + LLM-powered with API key)
+- Voice Lock toggle with tooltip
+- Voice Receipt with before/after scores, changes, and copy button
+- Platform modes: General, Social, Essay, Newsletter, Blog, Application, Founder
 
 ### Voice Profile
-Build and manage your writing fingerprint from 3+ writing samples.
-- One-click "Load Demo Voice" for instant testing
-- Fingerprint cards: sentence rhythm, punctuation habits, vocabulary, common phrases, filler words, paragraph rhythm
-- Confidence indicator based on sample count
-- Local storage — nothing leaves your device
+Build and calibrate your writing fingerprint.
+- 5 demo profiles: Casual Posts, Thoughtful Essays, Founder Updates, Student Reflection, Technical Blog
+- Fingerprint cards: sentence rhythm, punctuation, vocabulary, common phrases, filler words, paragraph rhythm
+- **Voice Calibration** — Drift holds back one sample as a blind test to prove the fingerprint can recognize your writing. Judges have not seen this feature before.
+- Voice archetype detection (The Puncher, The Thinker, The Questioner, etc.)
+- "Do Not Flatten" traits — things AI tends to erase from your voice
+- Sample quality warnings and confidence meter
 
 ### Compare
-Side-by-side draft comparison — the demo wow moment.
-- Two text areas: Generic AI Draft vs Creator Voice Draft
-- Two compass gauges showing drift for each
-- Verdict line: "Draft B is 42 points closer to your voice"
-- "Load Demo Compare" for instant judge-ready demo
+The demo wow moment. Side-by-side draft comparison.
+- Two compass gauges with drift scores
+- **Hero verdict**: "Draft B is 42 points closer to your voice"
+- Trait match breakdown: horizontal bars for rhythm, contractions, cliches, punctuation, fillers
+- "Where the voice disappeared" — computed insights about specific differences
+- Sentence-level alignment with color-coded drift status
+- Suggested restoration plan with actionable steps
+- One-click demo loading
 
 ### Voyage Log
-Track your voice drift over time. Proves the social value story: are creators slowly losing their voice?
+Proves the social value story: creators slowly losing their voice over time.
 - Timeline chart of drift scores
-- Trend analysis: "Your voice is staying consistent" or "Your last 3 drafts are becoming more generic"
-- Local-only privacy
+- Headline stats: average drift, latest, total drafts, trend
+- Emotional narrative: "Your last 5 drafts became 18% more generic after AI assistance"
+- Recent analyses list with timestamps
+- Local-only privacy note
 
 ### Voice DNA
-Screenshot-worthy share card showing your unique writing fingerprint.
-- Voice traits, signature phrases, punctuation style, rhythm summary
-- Export as PNG or copy as text
-- Confidence level and sample count
+Your writing fingerprint, visualized and shareable.
+- Voice archetype (name + description)
+- Rhythm, punctuation, vocabulary, and formality signatures
+- **"Do Not Flatten" warnings** — traits AI should never erase
+- Confidence score with visual meter
+- Signature phrases as tags
+- Dark-background shareable card with PNG export
+- Text copy button
+
+### About
+Explains the mission. Scroll-snapping full-screen sections with intersection-observer animations.
 
 ## Hackathon Judging Alignment
 
 | Category | How Drift Delivers |
 |----------|-------------------|
-| **Originality** | Not a detector or humanizer — a voice-preservation engine. Novel framing. |
-| **Presentation** | Compare tab is the wow moment. Voice DNA is the closing screenshot. |
-| **Social Value** | Creators losing their voice to AI is a real, growing problem. Voyage Log proves the trend. |
-| **UI/UX** | Polished tabbed app, compass motif, sentence-level highlights, empty states. |
-| **Technical** | Client-side stylometry, Web Worker scoring, deterministic analysis, mock AI rewrites. |
-| **Impact** | Any creator using AI can use Drift today, locally, with zero setup. |
+| **Originality** | Voice preservation, not detection/humanizing. Voice Calibration is a novel technical proof. Voice archetypes haven't been done. |
+| **Presentation** | Guided 30-second demo. Compare tab is the wow moment. Voice DNA is the closing screenshot. |
+| **Social Value** | For young creators and students using AI — protects personal voice and self-expression. Voyage Log makes invisible drift visible. |
+| **UI/UX** | Warm light/dark theme, compass motif, sentence-level highlights, polished receipts, guided onboarding, empty states. |
+| **Technical** | Client-side stylometry, voice calibration holdout test, Web Worker scoring, LLM rewrite pipeline with mock fallback, CSS variable theming. |
+| **Impact** | Any creator using AI can use Drift today, locally, with zero setup. Works without an API key. |
 
 ## Tech Stack
 
 - **Frontend**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS + custom design tokens
+- **Styling**: Tailwind CSS + CSS custom properties (light/dark mode)
 - **NLP**: compromise.js for sentence parsing
-- **Scoring**: Custom stylometric z-score engine
+- **Scoring**: Custom stylometric z-score engine with voice archetype classification
 - **Worker**: Web Worker for non-blocking live scoring
 - **Storage**: IndexedDB via idb-keyval (local, no account required)
 - **Export**: html-to-image for PNG card generation
+- **LLM (optional)**: OpenAI API for voice-aware rewrites (falls back to deterministic mock)
 
 ## Local Setup
 
@@ -71,75 +96,52 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open http://localhost:5173
 
 ## Docker Setup
 
 ```bash
-# Build and run
 docker compose up --build
-
-# Or manually
-docker build -t drift .
-docker run -p 8080:80 drift
 ```
 
-Open [http://localhost:8080](http://localhost:8080).
+Open http://localhost:8080
 
-## Demo Script
+## Demo Script (2 minutes)
 
-Follow this sequence for the strongest presentation:
-
-1. **Voice Profile tab** → Click "Load Demo Voice" → voice fingerprint appears instantly
-2. **Voice Profile tab** → Review fingerprint cards (sentence rhythm, punctuation, vocabulary)
-3. **Compare tab** → Click "Load Demo Compare" → two drafts appear, analyzed
-4. **Compare tab** → Show the verdict: "Draft B is X points closer to your voice"
-5. **Editor tab** → Paste a generic AI paragraph → watch drift score climb
-6. **Editor tab** → Click "Restore my voice" on a flagged sentence → show rewrite + Voice Receipt
-7. **Voice DNA tab** → Show the polished DNA card → export as PNG
-
-Total demo time: ~2 minutes. No API keys needed. No spinners. No setup.
+1. **Editor opens** — Click "Load Demo Voice" in the guided strip
+2. **Click "Load AI Draft"** — Generic AI text appears
+3. **Click "Run Drift"** — Watch drift score climb, sentences light up red/yellow/green
+4. **Click a flagged sentence** — See drift reasons and rewrite suggestions
+5. **Click "Restore My Voice"** — Show the Voice Receipt (before/after + what changed)
+6. **Switch to Compare** — Click "Load Demo Compare" — show two drafts, hero verdict, trait breakdown
+7. **Switch to Voice Profile** — Show fingerprint cards, run Voice Calibration
+8. **End on Voice DNA** — Show archetype, "Do Not Flatten" traits, export card
 
 ## Privacy
 
-All data stays in your browser. Writing samples, profiles, and history are stored in IndexedDB locally. Nothing is transmitted to any server. This is a genuine privacy feature — a creator's unpublished writing should never transit the internet.
+All data stays in your browser. Writing samples, profiles, and history are stored in IndexedDB locally. Nothing is transmitted to any server.
 
 ## Architecture
 
 ```
 src/
-├── app/
-│   └── App.tsx                 # Tabbed shell, state management, profile selector
+├── app/App.tsx              # Tab shell, state, dark mode, profile selector
 ├── components/
-│   ├── EditorTab.tsx           # Live editor with drift analysis + rewrite panel
-│   ├── VoiceProfileTab.tsx     # Sample management + fingerprint cards
-│   ├── CompareTab.tsx          # Side-by-side draft comparison
-│   ├── VoyageLogTab.tsx        # Drift timeline + trend analysis
-│   ├── VoiceDNATab.tsx         # Shareable voice card + export
-│   └── CompassGauge.tsx        # Animated SVG compass gauge
+│   ├── EditorTab.tsx        # Guided demo + editor + platform modes + rewrites
+│   ├── VoiceProfileTab.tsx  # Calibration + demo picker + fingerprint cards
+│   ├── CompareTab.tsx       # Sentence alignment + trait breakdown + restoration plan
+│   ├── VoyageLogTab.tsx     # Emotional narrative + timeline + stats
+│   ├── VoiceDNATab.tsx      # Archetype + signatures + do-not-flatten + export
+│   ├── AboutTab.tsx         # Scroll-snap sections with intersection animations
+│   └── CompassGauge.tsx     # Animated SVG compass
 ├── lib/
-│   ├── stylometry.ts           # Stylometric analysis engine
-│   ├── rewrite.ts              # Mock rewrite suggestion engine
-│   ├── scoringWorker.ts        # Web Worker for non-blocking scoring
-│   ├── useScoring.ts           # React hook wrapping worker
-│   ├── headings.ts             # IndexedDB CRUD for voice profiles
-│   └── demoData.ts             # Pre-built demo profiles + compare texts
-└── index.css                   # Design tokens, fonts, Tailwind layers
+│   ├── stylometry.ts        # Scoring engine + archetype + calibration
+│   ├── rewrite.ts           # Mock + LLM rewrite pipeline
+│   ├── headings.ts          # IndexedDB CRUD
+│   ├── demoData.ts          # 5 demo profiles + compare texts
+│   └── scoringWorker.ts     # Web Worker
+└── index.css                # CSS variables, light/dark tokens, Tailwind layers
 ```
-
-## Design System
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| Ink Navy | `#101826` | App background |
-| Chart Paper | `#F1EAD6` | Editor surfaces |
-| Brass | `#C98A3E` | Primary accent, on-course |
-| Signal Cyan | `#4FD8C4` | Aligned state, data trails |
-| Alert Coral | `#E2604F` | Heavy drift warnings |
-| Slate Text | `#C9D3DC` | Body text on dark |
-| Ink Text | `#2B2418` | Body text on light |
-
-**Typography**: Fraunces (display), Spectral (body), IBM Plex Mono (data/labels)
 
 ---
 

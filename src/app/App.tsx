@@ -9,15 +9,15 @@ import { CompassGauge } from '@/components/CompassGauge';
 import { listHeadings, Heading, getDriftHistory, DriftHistoryEntry } from '@/lib/headings';
 import { loadDemoData } from '@/lib/demoData';
 
-type Tab = 'about' | 'editor' | 'profile' | 'compare' | 'log' | 'dna';
+type Tab = 'editor' | 'profile' | 'compare' | 'log' | 'dna' | 'about';
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: 'about', label: 'About' },
   { key: 'editor', label: 'Editor' },
   { key: 'profile', label: 'Voice Profile' },
   { key: 'compare', label: 'Compare' },
   { key: 'log', label: 'Voyage Log' },
   { key: 'dna', label: 'Voice DNA' },
+  { key: 'about', label: 'About' },
 ];
 
 function CompassLogo({ size = 28 }: { size?: number }) {
@@ -60,7 +60,7 @@ function DarkModeToggle({ dark, onToggle }: { dark: boolean; onToggle: () => voi
 }
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('about');
+  const [activeTab, setActiveTab] = useState<Tab>('editor');
   const [currentDrift, setCurrentDrift] = useState(0);
   const [activeHeading, setActiveHeading] = useState<Heading | null>(null);
   const [headings, setHeadings] = useState<Heading[]>([]);
@@ -145,7 +145,7 @@ export function App() {
             <CompassLogo size={30} />
             <h1 className="text-lg font-bold text-ink-text">Drift</h1>
             <p className="text-xs text-slate-text/50 hidden lg:block ml-2">
-              Does it still sound like you?
+              AI helps you write faster. Drift makes sure it still sounds like you.
             </p>
           </div>
 
@@ -182,13 +182,13 @@ export function App() {
           <AboutTab onGetStarted={() => setActiveTab('profile')} />
         )}
         {activeTab === 'editor' && (
-          <EditorTab activeProfile={activeHeading?.profile || null} activeHeadingId={activeHeading?.id || ''} onDriftChange={setCurrentDrift} />
+          <EditorTab activeProfile={activeHeading?.profile || null} activeHeadingId={activeHeading?.id || ''} activeProfileName={activeHeading?.name || ''} onDriftChange={setCurrentDrift} onLoadDemo={handleLoadDemo} />
         )}
         {activeTab === 'profile' && (
           <VoiceProfileTab activeHeading={activeHeading} onProfileCreated={refreshHeadings} onLoadDemo={handleLoadDemo} />
         )}
         {activeTab === 'compare' && (
-          <CompareTab activeProfile={activeHeading?.profile || null} />
+          <CompareTab activeProfile={activeHeading?.profile || null} sampleCount={activeHeading?.samples.length} />
         )}
         {activeTab === 'log' && (
           <VoyageLogTab history={driftHistory} activeHeadingName={activeHeading?.name || ''} />

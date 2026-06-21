@@ -556,3 +556,168 @@ export function computeProfileSimilarity(textA: string, textB: string, profile: 
   const scoreB = computeDriftScore100(textB, profile);
   return { scoreA, scoreB, difference: Math.abs(scoreA - scoreB) };
 }
+
+export interface VoiceArchetype {
+  name: string;
+  description: string;
+  traits: string[];
+  doNotFlatten: string[];
+  rhythmSignature: string;
+  punctuationSignature: string;
+  vocabularySignature: string;
+  formalityLevel: string;
+  confidence: number;
+}
+
+export function computeVoiceArchetype(profile: StylemetricProfile, sampleCount: number): VoiceArchetype {
+  const traits: string[] = [];
+  const doNotFlatten: string[] = [];
+
+  const avgLen = profile.sentenceLength.mean;
+  const variation = profile.sentenceLength.stdDev;
+  let rhythmSignature: string;
+
+  if (avgLen < 10 && variation > 5) {
+    rhythmSignature = 'Punchy and varied — short bursts with occasional longer runs';
+    traits.push('Short, punchy sentences');
+    doNotFlatten.push('Short sentence rhythm — AI tends to merge these into longer ones');
+  } else if (avgLen < 10) {
+    rhythmSignature = 'Tight and controlled — consistently short sentences';
+    traits.push('Consistently concise');
+    doNotFlatten.push('Brevity — resist the urge to add unnecessary detail');
+  } else if (avgLen > 20 && variation > 6) {
+    rhythmSignature = 'Flowing with variety — longer sentences mixed with shorter ones';
+    traits.push('Long flowing sentences with range');
+  } else if (avgLen > 20) {
+    rhythmSignature = 'Measured and expansive — consistently detailed sentences';
+    traits.push('Detailed, thorough sentences');
+  } else {
+    rhythmSignature = `Natural cadence — averaging ${Math.round(avgLen)} words with moderate variation`;
+    traits.push('Balanced sentence length');
+  }
+
+  let punctuationSignature: string;
+  if (profile.punctuation.emDashes > 5) {
+    punctuationSignature = 'Em-dash heavy — uses dashes for asides and emphasis';
+    traits.push('Distinctive em-dash usage');
+    doNotFlatten.push('Em-dashes — a key part of your voice that AI often removes');
+  } else if (profile.punctuation.exclamationPoints > 10) {
+    punctuationSignature = 'Exclamation-forward — high energy punctuation';
+    traits.push('High-energy punctuation');
+    doNotFlatten.push('Exclamation marks — your enthusiasm is part of your voice');
+  } else if (profile.punctuation.questionMarks > 5) {
+    punctuationSignature = 'Question-driven — uses rhetorical questions frequently';
+    traits.push('Rhetorical questioning style');
+    doNotFlatten.push('Questions — your conversational questioning style');
+  } else {
+    punctuationSignature = 'Standard punctuation — clean and conventional';
+  }
+
+  let vocabularySignature: string;
+  if (profile.contractionRate > 0.7) {
+    vocabularySignature = 'Highly informal — heavy contractions, conversational';
+    traits.push('Conversational contractions');
+    doNotFlatten.push("Contractions — you write \"don't\" not \"do not\", and AI reverses this");
+  } else if (profile.contractionRate < 0.3) {
+    vocabularySignature = 'Formal register — expanded forms, careful word choice';
+    traits.push('Formal, deliberate vocabulary');
+    doNotFlatten.push('Formality — your deliberately careful word choices');
+  } else {
+    vocabularySignature = 'Mixed register — natural blend of formal and informal';
+  }
+
+  if (profile.fillerWords.frequency > 5) {
+    traits.push('Uses filler words naturally');
+    doNotFlatten.push('Filler words like "honestly", "actually" — they make your writing feel real');
+  }
+
+  if (profile.lexicalDiversity.mean > 0.65) {
+    traits.push('Rich, varied vocabulary');
+  } else if (profile.lexicalDiversity.mean < 0.45) {
+    traits.push('Focused, repetitive vocabulary');
+    doNotFlatten.push('Deliberate word repetition — part of your emphasis style');
+  }
+
+  let formalityLevel: string;
+  if (profile.contractionRate > 0.6 && profile.fillerWords.frequency > 4 && avgLen < 14) {
+    formalityLevel = 'Very casual';
+  } else if (profile.contractionRate > 0.4 && avgLen < 18) {
+    formalityLevel = 'Casual';
+  } else if (profile.contractionRate < 0.3 && avgLen > 18) {
+    formalityLevel = 'Formal';
+  } else {
+    formalityLevel = 'Semi-formal';
+  }
+
+  let name: string;
+  if (avgLen < 10 && profile.contractionRate > 0.6) name = 'The Puncher';
+  else if (avgLen > 18 && profile.punctuation.emDashes > 5) name = 'The Thinker';
+  else if (profile.punctuation.questionMarks > 5) name = 'The Questioner';
+  else if (profile.contractionRate > 0.7 && profile.fillerWords.frequency > 5) name = 'The Conversationalist';
+  else if (profile.contractionRate < 0.3 && avgLen > 18) name = 'The Formalist';
+  else if (variation > 8) name = 'The Shapeshifter';
+  else if (profile.punctuation.exclamationPoints > 8) name = 'The Enthusiast';
+  else name = 'The Narrator';
+
+  const descriptions: Record<string, string> = {
+    'The Puncher': 'Short, sharp sentences. Gets to the point. Doesn\'t waste words.',
+    'The Thinker': 'Longer, layered sentences with em-dashes and asides. Explores ideas in depth.',
+    'The Questioner': 'Draws the reader in with questions. Conversational and engaging.',
+    'The Conversationalist': 'Writes like they talk. Contractions, filler words, natural rhythm.',
+    'The Formalist': 'Precise, measured prose. Avoids shortcuts. Every word is deliberate.',
+    'The Shapeshifter': 'Wide range of sentence lengths. Mixes short punches with flowing passages.',
+    'The Enthusiast': 'High-energy writing. Exclamation points, short sentences, urgency.',
+    'The Narrator': 'Balanced, versatile style. Adapts naturally to the content.',
+  };
+
+  const confidence = Math.min(sampleCount >= 5 ? 90 : sampleCount >= 3 ? 70 : 40, 95);
+
+  return {
+    name,
+    description: descriptions[name] || 'A unique writing voice.',
+    traits,
+    doNotFlatten,
+    rhythmSignature,
+    punctuationSignature,
+    vocabularySignature,
+    formalityLevel,
+    confidence,
+  };
+}
+
+export interface CalibrationResult {
+  heldBackSample: string;
+  recognized: boolean;
+  score: number;
+  explanation: string;
+}
+
+export function runVoiceCalibration(samples: string[]): CalibrationResult | null {
+  if (samples.length < 3) return null;
+
+  const heldBackIdx = Math.floor(Math.random() * samples.length);
+  const heldBack = samples[heldBackIdx];
+  const trainingSamples = samples.filter((_, i) => i !== heldBackIdx);
+
+  const profile = buildProfile(trainingSamples);
+  const driftScore = computeDriftScore100(heldBack, profile);
+
+  const recognized = driftScore < 40;
+  let explanation: string;
+  if (driftScore < 20) {
+    explanation = 'Strong match. Drift confidently recognized this as your writing based on the other samples.';
+  } else if (driftScore < 40) {
+    explanation = 'Good match. The held-back sample shares clear stylistic patterns with your other writing.';
+  } else if (driftScore < 60) {
+    explanation = 'Partial match. Some traits align but others diverge. More samples would help calibrate.';
+  } else {
+    explanation = 'Weak match. This sample differs significantly from your other writing. Consider whether it represents a different voice or context.';
+  }
+
+  return {
+    heldBackSample: heldBack,
+    recognized,
+    score: driftScore,
+    explanation,
+  };
+}

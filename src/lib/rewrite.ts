@@ -1,4 +1,4 @@
-import { StylemetricProfile, CLICHE_REPLACEMENTS, findAIClichesInSentence, computeDriftScore100 } from './stylometry';
+import { StylemetricProfile, CLICHE_REPLACEMENTS, findAIClichesInSentence, computeDriftScore100, computeVoiceArchetype } from './stylometry';
 
 export interface RewriteSuggestion {
   original: string;
@@ -174,6 +174,75 @@ export function generateMockRewrites(
   }
 
   return suggestions;
+}
+
+export type PlatformMode = 'general' | 'social' | 'essay' | 'newsletter' | 'blog' | 'application' | 'founder';
+
+const PLATFORM_HINTS: Record<PlatformMode, string> = {
+  general: '',
+  social: 'Keep it short and punchy. Under 280 characters if possible.',
+  essay: 'Maintain depth and flow. Longer sentences are fine if they serve the argument.',
+  newsletter: 'Conversational but structured. Use transitions. Address the reader directly.',
+  blog: 'Informative but personal. Use concrete examples. Avoid jargon where possible.',
+  application: 'Sincere and specific. Show, don\'t tell. Avoid cliches about passion and growth.',
+  founder: 'Direct and data-informed. Lead with results, then context. Skip the fluff.',
+};
+
+export async function generateLLMRewrite(
+  sentence: string,
+  profile: StylemetricProfile,
+  _mode: PlatformMode = 'general',
+  sampleCount: number = 3,
+): Promise<RewriteSuggestion | null> {
+  const apiKey = typeof window !== 'undefined' ? localStorage.getItem('drift-openai-key') : null;
+  if (!apiKey) return null;
+
+  const archetype = computeVoiceArchetype(profile, sampleCount);
+  const platformHint = PLATFORM_HINTS[_mode];
+
+  const prompt = `You are a voice-preservation editor. Your job is to rewrite ONE sentence so it matches the creator's writing fingerprint while preserving the original meaning.
+
+Creator voice profile:
+- Archetype: ${archetype.name} — ${archetype.description}
+- Average sentence: ${Math.round(profile.sentenceLength.mean)} words
+- Contraction rate: ${Math.round(profile.contractionRate * 100)}%
+- Formality: ${archetype.formalityLevel}
+- Rhythm: ${archetype.rhythmSignature}
+- Punctuation: ${archetype.punctuationSignature}
+- Do NOT flatten: ${archetype.doNotFlatten.join('; ')}
+${platformHint ? `\nPlatform context: ${platformHint}` : ''}
+
+Sentence to rewrite:
+"${sentence}"
+
+Return ONLY a JSON object with:
+{"rewritten": "the rewritten sentence", "explanation": "1-sentence explanation of what changed"}`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7,
+        max_tokens: 200,
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return null;
+    const parsed = JSON.parse(content.replace(/```json\n?/g, '').replace(/```/g, '').trim());
+    return {
+      original: sentence,
+      rewritten: parsed.rewritten,
+      explanation: parsed.explanation || 'AI-powered voice restoration',
+      changes: ['Rewritten by AI to match your voice fingerprint'],
+    };
+  } catch {
+    return null;
+  }
 }
 
 export function generateVoiceReceipt(
