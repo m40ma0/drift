@@ -336,8 +336,8 @@ export function EditorTab({ activeProfile, activeHeadingId, activeProfileName, o
       )}
 
       {/* Editor panels */}
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-1/2 flex flex-col border-r border-card-border">
+      <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
+        <div className="sm:w-1/2 flex flex-col border-b sm:border-b-0 sm:border-r border-card-border min-h-[200px]">
           <div className="px-6 py-3 border-b border-card-border/50">
             <span className="text-xs font-medium text-slate-text/50">Your draft</span>
           </div>
@@ -346,7 +346,7 @@ export function EditorTab({ activeProfile, activeHeadingId, activeProfileName, o
             className="flex-1 w-full bg-transparent text-ink-text placeholder-slate-text/40 text-base leading-relaxed resize-none focus:outline-none p-6" />
         </div>
 
-        <div className="w-1/2 flex flex-col overflow-y-auto bg-warm-bg/50">
+        <div className="sm:w-1/2 flex flex-col overflow-y-auto bg-warm-bg/50 min-h-[200px]">
           <div className="px-6 py-3 border-b border-card-border/50">
             <span className="text-xs font-medium text-slate-text/50">Drift analysis</span>
           </div>

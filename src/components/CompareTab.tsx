@@ -349,7 +349,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
       </div>
 
       {/* Text inputs with prominent demo CTA when empty */}
-      <div className="grid grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.05s' }}>
         <div className="space-y-2">
           <label className="text-xs font-medium text-slate-text/60">Draft A &mdash; Generic AI</label>
           <textarea
@@ -410,7 +410,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
           </div>
 
           {/* 2. Compass gauges side by side */}
-          <div className="grid grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '0.10s' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.10s' }}>
             <div className="card-panel flex flex-col items-center py-6">
               <span className="text-xs font-semibold tracking-wide uppercase text-slate-text/50 mb-2">Draft A</span>
               <CompassGauge drift={(scoreA / 100) * 45} size={160} />
@@ -507,7 +507,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
           )}
 
           {/* 6. Individual sentence breakdowns (details) */}
-          <div className="grid grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '0.30s' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.30s' }}>
             <SentenceBreakdown label="Draft A details" sentences={sentencesA} />
             <SentenceBreakdown label="Draft B details" sentences={sentencesB} />
           </div>

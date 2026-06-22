@@ -117,6 +117,36 @@ Open http://localhost:8080
 7. **Switch to Voice Profile** — Show fingerprint cards, run Voice Calibration
 8. **End on Voice DNA** — Show archetype, "Do Not Flatten" traits, export card
 
+## How Scoring Works (Transparency)
+
+Drift's scoring is deterministic and measurable — not vibes.
+
+It compares these measurable writing traits between your draft and your voice fingerprint:
+- **Sentence rhythm** — average length, variance, short/long mix
+- **Contraction rate** — "don't" vs "do not" ratio
+- **AI cliche density** — phrases like "in today's fast-paced world", "leverage", "innovative"
+- **Formality level** — passive voice, corporate vocabulary, transition words
+- **Filler word frequency** — "honestly", "actually", "basically"
+- **Punctuation habits** — em-dashes, exclamation points, question marks
+
+Each trait is computed locally using z-score deviation from the profile baseline. The drift score is a weighted combination normalized to 0–100.
+
+AI is used only for rewrite suggestions (optional, requires API key). The scoring itself never touches an API.
+
+Voice Calibration proves the system works: it holds back one of your samples, builds a fingerprint from the rest, then checks whether it can recognize the held-back sample. If it can, the fingerprint is real.
+
+## 2-Minute Pitch Script
+
+1. **Problem** (15s): "AI helps people write faster. But it can flatten their voice — everything starts sounding the same. Creators, students, and writers lose the thing that makes their writing theirs."
+
+2. **Solution** (15s): "Drift measures your actual writing fingerprint — sentence rhythm, punctuation habits, vocabulary choices — and flags exactly where a draft has drifted away from it."
+
+3. **Demo** (60s): Load demo voice → paste AI draft → show sentence-level flags → restore a flagged sentence → show Voice Receipt → open Compare tab → show trait breakdown → open Voice DNA for final screenshot.
+
+4. **Technical** (15s): "Deterministic stylometric scoring runs locally. No API needed. AI is an optional co-editor for rewrites, not a dependency."
+
+5. **Impact** (15s): "For students using AI responsibly, for creators who want to stay authentic, for anyone who wants their writing to sound like themselves. All data stays local. Privacy by design."
+
 ## Privacy
 
 All data stays in your browser. Writing samples, profiles, and history are stored in IndexedDB locally. Nothing is transmitted to any server.
