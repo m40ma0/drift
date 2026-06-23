@@ -22,28 +22,14 @@ export default {
         'sans': ['Poppins', 'sans-serif'],
         'mono': ['IBM Plex Mono', 'monospace'],
       },
-      borderRadius: {
-        'xl': '1rem',
-        '2xl': '1.25rem',
-      },
       keyframes: {
         'fade-in': {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        'fade-in-slow': {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        'slide-up': {
-          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'fade-in': 'fade-in 0.4s ease-out forwards',
-        'fade-in-slow': 'fade-in-slow 0.6s ease-out forwards',
-        'slide-up': 'slide-up 0.5s ease-out forwards',
+        'fade-in': 'fade-in 0.25s ease-out forwards',
       },
     },
   },

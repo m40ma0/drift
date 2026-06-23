@@ -96,7 +96,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
   if (!activeHeading || !archetype) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20 animate-fade-in">
-        <div className="w-20 h-20 rounded-2xl bg-warm-bg flex items-center justify-center">
+        <div className="w-20 h-20 rounded-lg bg-warm-bg flex items-center justify-center">
           <span className="text-3xl">&#127912;</span>
         </div>
         <p className="text-ink-text text-lg font-medium">Create a voice profile to see your DNA</p>
@@ -176,7 +176,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/*  1. Voice Archetype                                          */}
       {/* ============================================================ */}
       <section className="text-center animate-fade-in">
-        <p className="text-xs font-medium tracking-widest uppercase text-signal-cyan mb-2">
+        <p className="text-xs font-medium tracking-widest text-signal-cyan mb-2">
           Voice Archetype
         </p>
         <h2 className="text-3xl font-bold text-brass">{archetype.name}</h2>
@@ -188,11 +188,11 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {/*  2. Signature sections                                       */}
       {/* ============================================================ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
 
         {/* --- Rhythm Signature --- */}
         <div className="card-panel space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brass">Rhythm Signature</h3>
+          <h3 className="text-xs font-semibold text-brass">Rhythm Signature</h3>
           <p className="text-sm text-slate-text leading-relaxed">{archetype.rhythmSignature}</p>
           <div className="flex items-end gap-1 h-8">
             {/* mini bar chart: sentence length visualisation */}
@@ -222,7 +222,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
 
         {/* --- Punctuation Signature --- */}
         <div className="card-panel space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brass">Punctuation Signature</h3>
+          <h3 className="text-xs font-semibold text-brass">Punctuation Signature</h3>
           <p className="text-sm text-slate-text leading-relaxed">{archetype.punctuationSignature}</p>
           <div className="space-y-1.5">
             {punctStats.slice(0, 4).map((stat) => (
@@ -246,7 +246,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
 
         {/* --- Vocabulary Signature --- */}
         <div className="card-panel space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brass">Vocabulary Signature</h3>
+          <h3 className="text-xs font-semibold text-brass">Vocabulary Signature</h3>
           <p className="text-sm text-slate-text leading-relaxed">{archetype.vocabularySignature}</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -266,7 +266,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
 
         {/* --- Formality Level --- */}
         <div className="card-panel space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brass">Formality Level</h3>
+          <h3 className="text-xs font-semibold text-brass">Formality Level</h3>
           <FormalityBar level={archetype.formalityLevel} />
           <p className="text-xs text-slate-text/60 leading-relaxed">
             {archetype.formalityLevel === 'Very casual'
@@ -285,7 +285,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {archetype.doNotFlatten.length > 0 && (
         <section
-          className="animate-fade-in rounded-xl border-2 p-5 space-y-3"
+          className="animate-fade-in rounded-md border-2 p-5 space-y-3"
           style={{
             animationDelay: '0.1s',
             borderColor: 'var(--hex-coral)',
@@ -297,7 +297,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-            <h3 className="text-sm font-bold text-alert-coral uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-alert-coral">
               Do Not Flatten
             </h3>
           </div>
@@ -322,7 +322,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {/*  4. Confidence                                               */}
       {/* ============================================================ */}
-      <section className="card-panel animate-fade-in" style={{ animationDelay: '0.12s' }}>
+      <section className="card-panel animate-fade-in">
         <ConfidenceMeter confidence={archetype.confidence} sampleCount={sampleCount} />
       </section>
 
@@ -330,8 +330,8 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/*  5. Signature Phrases                                        */}
       {/* ============================================================ */}
       {profile.topPhrases && profile.topPhrases.length > 0 && (
-        <section className="card-panel animate-fade-in space-y-3" style={{ animationDelay: '0.14s' }}>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-brass">
+        <section className="card-panel animate-fade-in space-y-3">
+          <h3 className="text-xs font-semibold text-brass">
             Signature Phrases
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -355,8 +355,8 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {/*  8. Profile Traits (getProfileSummary)                       */}
       {/* ============================================================ */}
-      <section className="animate-fade-in space-y-3" style={{ animationDelay: '0.16s' }}>
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-brass text-center">
+      <section className="animate-fade-in space-y-3">
+        <h3 className="text-xs font-semibold text-brass text-center">
           Voice Traits
         </h3>
         <div className="space-y-2">
@@ -372,7 +372,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {/*  6. Raw Stats Grid                                           */}
       {/* ============================================================ */}
-      <section className="animate-fade-in" style={{ animationDelay: '0.18s' }}>
+      <section className="animate-fade-in">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: 'Sentences', value: String(profile.sentenceCount || '--') },
@@ -391,10 +391,10 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
       {/* ============================================================ */}
       {/*  7. Shareable DNA Card                                       */}
       {/* ============================================================ */}
-      <section className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <section className="animate-fade-in">
         <div
           ref={cardRef}
-          className="w-full rounded-2xl p-8 flex flex-col gap-5 relative overflow-hidden shadow-lg"
+          className="w-full rounded-lg p-8 flex flex-col gap-5 relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #1a1f2e 0%, #141820 50%, #1a1f2e 100%)' }}
         >
           {/* decorative bg element */}
@@ -410,7 +410,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
 
           {/* header: archetype + name */}
           <div>
-            <p className="text-[10px] font-medium text-[#4FD8C4]/60 tracking-widest uppercase mb-1">
+            <p className="text-[10px] font-medium text-[#4FD8C4]/60 tracking-widest mb-1">
               Voice DNA
             </p>
             <h3 className="text-2xl font-bold text-[#B8863A] mb-0.5">{activeHeading.name}</h3>
@@ -421,13 +421,13 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
           {/* signatures row */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-3">
             <div>
-              <p className="text-[10px] text-[#C9D3DC]/40 uppercase tracking-wider">Rhythm</p>
+              <p className="text-[10px] text-[#C9D3DC]/40">Rhythm</p>
               <p className="text-xs text-[#C9D3DC]/80 leading-snug mt-0.5">
                 {Math.round(profile.sentenceLength.mean)} words avg &middot; &sigma;{profile.sentenceLength.stdDev.toFixed(1)}
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-[#C9D3DC]/40 uppercase tracking-wider">Punctuation</p>
+              <p className="text-[10px] text-[#C9D3DC]/40">Punctuation</p>
               <p className="text-xs text-[#C9D3DC]/80 leading-snug mt-0.5">
                 {profile.punctuation.emDashes > 3
                   ? `${profile.punctuation.emDashes.toFixed(1)} em-dashes/100w`
@@ -437,13 +437,13 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-[#C9D3DC]/40 uppercase tracking-wider">Vocabulary</p>
+              <p className="text-[10px] text-[#C9D3DC]/40">Vocabulary</p>
               <p className="text-xs text-[#C9D3DC]/80 leading-snug mt-0.5">
                 {Math.round(profile.contractionRate * 100)}% contractions &middot; {Math.round(profile.lexicalDiversity.mean * 100)}% diverse
               </p>
             </div>
             <div>
-              <p className="text-[10px] text-[#C9D3DC]/40 uppercase tracking-wider">Formality</p>
+              <p className="text-[10px] text-[#C9D3DC]/40">Formality</p>
               <p className="text-xs text-[#C9D3DC]/80 leading-snug mt-0.5">{archetype.formalityLevel}</p>
             </div>
           </div>
@@ -461,7 +461,7 @@ export function VoiceDNATab({ activeHeading }: VoiceDNATabProps) {
           {/* do not flatten on card */}
           {archetype.doNotFlatten.length > 0 && (
             <div>
-              <p className="text-[10px] text-[#C4574A]/70 uppercase tracking-wider mb-1">
+              <p className="text-[10px] text-[#C4574A]/70 mb-1">
                 &#9888; Do not flatten
               </p>
               <p className="text-xs text-[#C9D3DC]/50 leading-relaxed">

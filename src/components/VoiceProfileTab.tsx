@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Heading, createHeading, getProfileSummary, saveHeading } from '@/lib/headings';
 import { StylemetricProfile, buildProfile, runVoiceCalibration, CalibrationResult, computeVoiceArchetype } from '@/lib/stylometry';
 import { demoCasualHeading, ALL_DEMO_HEADINGS } from '@/lib/demoData';
@@ -88,7 +88,7 @@ function CalibrationPanel({ samples }: { samples: string[] }) {
 
       {result && !running && (
         <div className="space-y-3 animate-fade-in">
-          <div className={`flex items-center gap-2 px-3 py-2.5 rounded-xl ${
+          <div className={`flex items-center gap-2 px-3 py-2.5 rounded-md ${
             result.recognized
               ? 'bg-signal-cyan/10 border border-signal-cyan/20'
               : 'bg-alert-coral/10 border border-alert-coral/20'
@@ -167,6 +167,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
   const [previewProfile, setPreviewProfile] = useState<StylemetricProfile | null>(null);
   const [step, setStep] = useState<'samples' | 'preview' | 'name'>('samples');
   const [loading, setLoading] = useState(false);
+  const importRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
 
   const handleSampleChange = (index: number, value: string) => {
@@ -235,7 +236,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 bg-signal-cyan/10 rounded-xl">
+            <div className="flex items-center gap-2 px-3 py-2 bg-signal-cyan/10 rounded-md">
               <span className="text-xs text-signal-cyan font-medium">
                 Based on {sampleCount} sample{sampleCount !== 1 ? 's' : ''}
               </span>
@@ -245,13 +246,42 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
             </div>
           </div>
 
+          {/* Export / Import */}
+          <div className="flex gap-2 animate-fade-in">
+            <button onClick={() => {
+              const data = JSON.stringify(activeHeading, null, 2);
+              const blob = new Blob([data], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = `drift-profile-${activeHeading.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+              a.click(); URL.revokeObjectURL(url);
+            }} className="btn-secondary text-xs py-1.5 px-3">Export profile</button>
+            <button onClick={() => importRef.current?.click()} className="btn-secondary text-xs py-1.5 px-3">Import profile</button>
+            <input ref={importRef} type="file" accept=".json" className="hidden" onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              try {
+                const text = await file.text();
+                const heading = JSON.parse(text) as Heading;
+                if (!heading.id || !heading.name || !heading.samples || !heading.profile) {
+                  setError('Invalid profile file'); return;
+                }
+                heading.id = `imported_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+                heading.updatedAt = Date.now();
+                await saveHeading(heading);
+                onProfileCreated();
+              } catch { setError('Could not read profile file'); }
+              if (importRef.current) importRef.current.value = '';
+            }} />
+          </div>
+
           {/* Confidence meter */}
-          <div className="card-panel animate-fade-in" style={{ animationDelay: '0.03s' }}>
+          <div className="card-panel animate-fade-in">
             <ConfidenceMeter sampleCount={sampleCount} />
           </div>
 
           {/* Voice summary */}
-          <div className="card-panel animate-fade-in" style={{ animationDelay: '0.05s' }}>
+          <div className="card-panel animate-fade-in">
             <h3 className="text-sm font-semibold text-ink-text mb-3">Your voice, in a nutshell</h3>
             <div className="space-y-2.5">
               {summary.map((bullet, i) => (
@@ -264,7 +294,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
 
           {/* Do Not Flatten */}
           {archetype && archetype.doNotFlatten.length > 0 && (
-            <div className="card-panel animate-fade-in border-brass/20" style={{ animationDelay: '0.08s' }}>
+            <div className="card-panel animate-fade-in border-brass/20">
               <h3 className="text-sm font-semibold text-ink-text mb-1">Do not flatten</h3>
               <p className="text-xs text-slate-text/50 mb-3">
                 These traits define your voice. AI rewrites tend to erase them.
@@ -342,7 +372,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
       ) : (
         <div className="space-y-8 animate-fade-in">
           <div className="text-center py-12 space-y-6">
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-warm-bg flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto rounded-lg bg-warm-bg flex items-center justify-center">
               <span className="text-3xl">&#128172;</span>
             </div>
             <div>
@@ -366,7 +396,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
         </h3>
 
         {error && (
-          <div className="mb-4 p-3 bg-alert-coral/5 border border-alert-coral/20 text-alert-coral text-sm rounded-xl animate-fade-in">
+          <div className="mb-4 p-3 bg-alert-coral/5 border border-alert-coral/20 text-alert-coral text-sm rounded-md animate-fade-in">
             {error}
           </div>
         )}
@@ -390,7 +420,7 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
                   <label className="text-xs font-medium text-slate-text/50">Sample {i + 1}</label>
                   <textarea value={sample} onChange={(e) => handleSampleChange(i, e.target.value)}
                     placeholder="Paste your writing here..."
-                    className={`w-full h-24 mt-1 p-3 bg-chart-paper text-ink-text text-sm border rounded-xl focus:outline-none focus:border-brass resize-none ${
+                    className={`w-full h-24 mt-1 p-3 bg-chart-paper text-ink-text text-sm border rounded-md focus:outline-none focus:border-brass resize-none ${
                       tooShort ? 'border-brass/50' : 'border-card-border'
                     }`} />
                   <div className="flex items-center justify-between mt-1">
@@ -488,13 +518,13 @@ export function VoiceProfileTab({ activeHeading, onProfileCreated, onLoadDemo }:
               <label className="text-xs font-medium text-slate-text/50">Profile name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Casual Posts, YouTube Scripts"
-                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-xl focus:outline-none focus:border-brass" />
+                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-md focus:outline-none focus:border-brass" />
             </div>
             <div>
               <label className="text-xs font-medium text-slate-text/50">What's this voice for?</label>
               <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g., Short social media posts"
-                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-xl focus:outline-none focus:border-brass" />
+                className="w-full mt-1 px-3 py-2 bg-chart-paper text-ink-text border border-card-border rounded-md focus:outline-none focus:border-brass" />
             </div>
             <div className="flex gap-3">
               <button onClick={() => setStep('preview')} className="btn-secondary flex-1">Back</button>

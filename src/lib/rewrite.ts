@@ -173,6 +173,17 @@ export function generateMockRewrites(
     }
   }
 
+  if (suggestions.length === 0) {
+    const words = sentence.split(/\s+/).filter(Boolean);
+    const targetLen = Math.round(profile.sentenceLength.mean);
+    suggestions.push({
+      original: sentence,
+      rewritten: sentence,
+      explanation: `This sentence drifts from your voice but has no direct text-level fix. Your rhythm averages ~${targetLen} words; this one has ${words.length}.`,
+      changes: [`Consider rewriting to match your ~${targetLen}-word rhythm`, 'Try using your usual vocabulary and punctuation'],
+    });
+  }
+
   return suggestions;
 }
 
@@ -188,19 +199,54 @@ const PLATFORM_HINTS: Record<PlatformMode, string> = {
   founder: 'Direct and data-informed. Lead with results, then context. Skip the fluff.',
 };
 
+async function callGemini(prompt: string, apiKey: string): Promise<string | null> {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 256 },
+      }),
+    },
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
+}
+
+async function callOpenAI(prompt: string, apiKey: string): Promise<string | null> {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 200,
+    }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data?.choices?.[0]?.message?.content ?? null;
+}
+
 export async function generateLLMRewrite(
   sentence: string,
   profile: StylemetricProfile,
   _mode: PlatformMode = 'general',
   sampleCount: number = 3,
 ): Promise<RewriteSuggestion | null> {
-  const apiKey = typeof window !== 'undefined' ? localStorage.getItem('drift-openai-key') : null;
-  if (!apiKey) return null;
+  if (typeof window === 'undefined') return null;
+  const geminiKey = import.meta.env.VITE_GEMINI_KEY || localStorage.getItem('drift-gemini-key');
+  const openaiKey = import.meta.env.VITE_OPENAI_KEY || localStorage.getItem('drift-openai-key');
+  if (!geminiKey && !openaiKey) return null;
 
   const archetype = computeVoiceArchetype(profile, sampleCount);
   const platformHint = PLATFORM_HINTS[_mode];
 
-  const prompt = `You are a voice-preservation editor. Your job is to rewrite ONE sentence so it matches the creator's writing fingerprint while preserving the original meaning.
+  const prompt = `You are a voice-preservation editor. Rewrite ONE sentence so it matches the creator's writing fingerprint while preserving the original meaning.
 
 Creator voice profile:
 - Archetype: ${archetype.name} — ${archetype.description}
@@ -215,29 +261,20 @@ ${platformHint ? `\nPlatform context: ${platformHint}` : ''}
 Sentence to rewrite:
 "${sentence}"
 
-Return ONLY a JSON object with:
+Return ONLY a JSON object with no extra text:
 {"rewritten": "the rewritten sentence", "explanation": "1-sentence explanation of what changed"}`;
 
   try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
-        max_tokens: 200,
-      }),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) return null;
-    const parsed = JSON.parse(content.replace(/```json\n?/g, '').replace(/```/g, '').trim());
+    const raw = geminiKey
+      ? await callGemini(prompt, geminiKey)
+      : await callOpenAI(prompt, openaiKey!);
+    if (!raw) return null;
+    const cleaned = raw.replace(/```json\n?/g, '').replace(/```/g, '').trim();
+    const parsed = JSON.parse(cleaned);
     return {
       original: sentence,
       rewritten: parsed.rewritten,
-      explanation: parsed.explanation || 'AI-powered voice restoration',
+      explanation: parsed.explanation || 'Rewritten to match your voice',
       changes: ['Rewritten by AI to match your voice fingerprint'],
     };
   } catch {

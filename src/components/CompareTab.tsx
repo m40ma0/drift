@@ -311,7 +311,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
   if (!activeProfile) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20 animate-fade-in">
-        <div className="w-16 h-16 rounded-2xl bg-warm-bg flex items-center justify-center">
+        <div className="w-16 h-16 rounded-lg bg-warm-bg flex items-center justify-center">
           <span className="text-2xl">&#9878;</span>
         </div>
         <p className="text-ink-text text-lg font-medium">Create a voice profile to compare drafts</p>
@@ -349,14 +349,14 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
       </div>
 
       {/* Text inputs with prominent demo CTA when empty */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in">
         <div className="space-y-2">
           <label className="text-xs font-medium text-slate-text/60">Draft A &mdash; Generic AI</label>
           <textarea
             value={textA}
             onChange={(e) => { setTextA(e.target.value); setAnalyzed(false); }}
             placeholder="Paste a generic AI-generated draft..."
-            className="w-full h-48 p-4 bg-chart-paper text-ink-text text-sm border border-card-border rounded-xl focus:outline-none focus:border-brass resize-none"
+            className="w-full h-48 p-4 bg-chart-paper text-ink-text text-sm border border-card-border rounded-md focus:outline-none focus:border-brass resize-none"
           />
         </div>
         <div className="space-y-2">
@@ -365,7 +365,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
             value={textB}
             onChange={(e) => { setTextB(e.target.value); setAnalyzed(false); }}
             placeholder="Paste a draft in your own voice..."
-            className="w-full h-48 p-4 bg-chart-paper text-ink-text text-sm border border-card-border rounded-xl focus:outline-none focus:border-brass resize-none"
+            className="w-full h-48 p-4 bg-chart-paper text-ink-text text-sm border border-card-border rounded-md focus:outline-none focus:border-brass resize-none"
           />
         </div>
       </div>
@@ -376,7 +376,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
           <p className="text-slate-text text-sm">Not sure what to paste? Try our side-by-side demo.</p>
           <button
             onClick={handleLoadDemo}
-            className="px-6 py-3 bg-brass/10 border-2 border-dashed border-brass/40 text-brass font-semibold rounded-xl hover:bg-brass/20 hover:border-brass/60 transition-all text-sm"
+            className="px-6 py-3 bg-brass/10 border-2 border-dashed border-brass/40 text-brass font-semibold rounded-md hover:bg-brass/20 hover:border-brass/60 transition-all text-sm"
           >
             Load Demo Compare &mdash; AI vs. Creator
           </button>
@@ -388,7 +388,7 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
         <div className="space-y-8">
 
           {/* 1. Hero verdict */}
-          <div className="animate-fade-in card-panel text-center py-8" style={{ animationDelay: '0.05s' }}>
+          <div className="animate-fade-in card-panel text-center py-8">
             {closerDraft === 'tie' ? (
               <>
                 <p className="text-2xl font-bold text-slate-text">Both drafts drift equally from your voice.</p>
@@ -410,16 +410,16 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
           </div>
 
           {/* 2. Compass gauges side by side */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.10s' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in">
             <div className="card-panel flex flex-col items-center py-6">
-              <span className="text-xs font-semibold tracking-wide uppercase text-slate-text/50 mb-2">Draft A</span>
+              <span className="text-xs font-semibold tracking-wide text-slate-text/50 mb-2">Draft A</span>
               <CompassGauge drift={(scoreA / 100) * 45} size={160} />
               <p className={`text-lg font-bold mt-2 ${scoreA < 30 ? 'text-signal-cyan' : scoreA < 60 ? 'text-brass' : 'text-alert-coral'}`}>
                 {scoreA} drift
               </p>
             </div>
             <div className="card-panel flex flex-col items-center py-6">
-              <span className="text-xs font-semibold tracking-wide uppercase text-slate-text/50 mb-2">Draft B</span>
+              <span className="text-xs font-semibold tracking-wide text-slate-text/50 mb-2">Draft B</span>
               <CompassGauge drift={(scoreB / 100) * 45} size={160} />
               <p className={`text-lg font-bold mt-2 ${scoreB < 30 ? 'text-signal-cyan' : scoreB < 60 ? 'text-brass' : 'text-alert-coral'}`}>
                 {scoreB} drift
@@ -429,8 +429,8 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
 
           {/* 3. Trait match breakdown */}
           {traitComparisons.length > 0 && (
-            <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
-              <h3 className="text-sm font-bold text-ink-text mb-4 uppercase tracking-wide">Trait match breakdown</h3>
+            <div className="animate-fade-in">
+              <h3 className="text-sm font-bold text-ink-text mb-4">Trait match breakdown</h3>
               <div className="card-panel space-y-4">
                 {traitComparisons.map((trait, i) => (
                   <div key={i} className="space-y-1.5">
@@ -450,13 +450,13 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
 
           {/* 4. "Where the voice disappeared" */}
           {voiceInsights.length > 0 && (
-            <div className="animate-fade-in" style={{ animationDelay: '0.20s' }}>
-              <h3 className="text-sm font-bold text-ink-text mb-4 uppercase tracking-wide">Where the voice disappeared</h3>
+            <div className="animate-fade-in">
+              <h3 className="text-sm font-bold text-ink-text mb-4">Where the voice disappeared</h3>
               <div className="card-panel space-y-3">
                 {voiceInsights.map((insight, i) => (
                   <div
                     key={i}
-                    className={`flex items-start gap-3 px-4 py-3 rounded-xl text-sm ${
+                    className={`flex items-start gap-3 px-4 py-3 rounded-md text-sm ${
                       insight.severity === 'bad'
                         ? 'bg-alert-coral/[0.06] border-l-2 border-alert-coral/50'
                         : insight.severity === 'warn'
@@ -476,15 +476,15 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
 
           {/* 5. Sentence-level alignment */}
           {sentencesA.length > 0 && sentencesB.length > 0 && (
-            <div className="animate-fade-in" style={{ animationDelay: '0.25s' }}>
-              <h3 className="text-sm font-bold text-ink-text mb-4 uppercase tracking-wide">Sentence-level alignment</h3>
+            <div className="animate-fade-in">
+              <h3 className="text-sm font-bold text-ink-text mb-4">Sentence-level alignment</h3>
               <div className="card-panel overflow-hidden">
                 {/* Header row */}
                 <div className="grid grid-cols-2 gap-0 border-b border-card-border">
-                  <div className="px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-wider text-slate-text/50">
+                  <div className="px-4 py-2 text-[0.65rem] font-semibold text-slate-text/50">
                     Draft A
                   </div>
-                  <div className="px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-wider text-slate-text/50 border-l border-card-border">
+                  <div className="px-4 py-2 text-[0.65rem] font-semibold text-slate-text/50 border-l border-card-border">
                     Draft B
                   </div>
                 </div>
@@ -507,15 +507,15 @@ export function CompareTab({ activeProfile, sampleCount = 3 }: CompareTabProps) 
           )}
 
           {/* 6. Individual sentence breakdowns (details) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.30s' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 animate-fade-in">
             <SentenceBreakdown label="Draft A details" sentences={sentencesA} />
             <SentenceBreakdown label="Draft B details" sentences={sentencesB} />
           </div>
 
           {/* 7. Restoration plan */}
           {restorationPlan.length > 0 && (
-            <div className="animate-fade-in" style={{ animationDelay: '0.35s' }}>
-              <h3 className="text-sm font-bold text-ink-text mb-4 uppercase tracking-wide">
+            <div className="animate-fade-in">
+              <h3 className="text-sm font-bold text-ink-text mb-4">
                 Suggested restoration plan
               </h3>
               <div className="card-panel bg-signal-cyan/[0.03]">
@@ -626,7 +626,7 @@ function SentenceBreakdown({ label, sentences }: { label: string; sentences: Sen
         {sentences.map((s, i) => (
           <div
             key={i}
-            className={`px-3 py-2 rounded-xl text-xs ${
+            className={`px-3 py-2 rounded-md text-xs ${
               s.status === 'aligned'
                 ? 'drift-aligned'
                 : s.status === 'slight-drift'

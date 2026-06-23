@@ -101,7 +101,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
 
       {/* Headline stats */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fade-in">
           <div className="card-panel text-center">
             <p className={`text-2xl font-bold ${stats.avg < 30 ? 'text-signal-cyan' : stats.avg < 60 ? 'text-brass' : 'text-alert-coral'}`}>
               {stats.avg}
@@ -129,7 +129,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
 
       {/* Narrative insights */}
       {narrative && narrative.length > 0 && (
-        <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <div className="space-y-3 animate-fade-in">
           {narrative.map((line, i) => (
             <div key={i} className={`card-panel flex items-start gap-3 ${
               line.type === 'good' ? 'border-signal-cyan/30' : line.type === 'bad' ? 'border-alert-coral/30' : 'border-brass/30'
@@ -150,7 +150,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
       )}
 
       {/* Chart */}
-      <div className="card-panel animate-fade-in" style={{ animationDelay: '0.15s' }}>
+      <div className="card-panel animate-fade-in">
         <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
           <defs>
             <linearGradient id="voyageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -189,7 +189,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
 
       {/* Recent entries */}
       {history.length > 0 && (
-        <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <div className="space-y-3 animate-fade-in">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-ink-text">Recent analyses</h3>
             {onClearHistory && history.length > 0 && (
@@ -226,7 +226,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
       {/* Empty state */}
       {history.length === 0 && (
         <div className="text-center py-12 animate-fade-in">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-warm-bg flex items-center justify-center mb-4">
+          <div className="w-16 h-16 mx-auto rounded-lg bg-warm-bg flex items-center justify-center mb-4">
             <span className="text-2xl">{'\u{1F4C8}'}</span>
           </div>
           <p className="text-ink-text font-medium mb-1">No drift history yet</p>
@@ -236,7 +236,7 @@ export function VoyageLogTab({ history, activeHeadingName, onClearHistory }: Voy
 
       {/* Social value callout */}
       {history.length >= 3 && (
-        <div className="card-panel text-center py-6 animate-fade-in" style={{ animationDelay: '0.25s' }}>
+        <div className="card-panel text-center py-6 animate-fade-in">
           <p className="text-sm text-slate-text italic leading-relaxed max-w-lg mx-auto">
             "As creators use AI more, their personal style can slowly flatten without them noticing.
             The Voyage Log makes that invisible drift visible — so you can catch it before your voice disappears."

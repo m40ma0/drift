@@ -106,18 +106,7 @@ docker compose up --build
 
 Open http://localhost:8080
 
-## Demo Script (2 minutes)
-
-1. **Editor opens** — Click "Load Demo Voice" in the guided strip
-2. **Click "Load AI Draft"** — Generic AI text appears
-3. **Click "Run Drift"** — Watch drift score climb, sentences light up red/yellow/green
-4. **Click a flagged sentence** — See drift reasons and rewrite suggestions
-5. **Click "Restore My Voice"** — Show the Voice Receipt (before/after + what changed)
-6. **Switch to Compare** — Click "Load Demo Compare" — show two drafts, hero verdict, trait breakdown
-7. **Switch to Voice Profile** — Show fingerprint cards, run Voice Calibration
-8. **End on Voice DNA** — Show archetype, "Do Not Flatten" traits, export card
-
-## How Scoring Works (Transparency)
+## How Scoring Works 
 
 Drift's scoring is deterministic and measurable — not vibes.
 
@@ -135,21 +124,11 @@ AI is used only for rewrite suggestions (optional, requires API key). The scorin
 
 Voice Calibration proves the system works: it holds back one of your samples, builds a fingerprint from the rest, then checks whether it can recognize the held-back sample. If it can, the fingerprint is real.
 
-## 2-Minute Pitch Script
-
-1. **Problem** (15s): "AI helps people write faster. But it can flatten their voice — everything starts sounding the same. Creators, students, and writers lose the thing that makes their writing theirs."
-
-2. **Solution** (15s): "Drift measures your actual writing fingerprint — sentence rhythm, punctuation habits, vocabulary choices — and flags exactly where a draft has drifted away from it."
-
-3. **Demo** (60s): Load demo voice → paste AI draft → show sentence-level flags → restore a flagged sentence → show Voice Receipt → open Compare tab → show trait breakdown → open Voice DNA for final screenshot.
-
-4. **Technical** (15s): "Deterministic stylometric scoring runs locally. No API needed. AI is an optional co-editor for rewrites, not a dependency."
-
-5. **Impact** (15s): "For students using AI responsibly, for creators who want to stay authentic, for anyone who wants their writing to sound like themselves. All data stays local. Privacy by design."
-
 ## Privacy
 
-All data stays in your browser. Writing samples, profiles, and history are stored in IndexedDB locally. Nothing is transmitted to any server.
+**Local by default.** Writing samples, voice profiles, drift history, and receipts are stored in IndexedDB in your browser. Nothing is transmitted to any server.
+
+Text is sent to OpenAI **only** if you explicitly add an API key via `localStorage.setItem('drift-openai-key', 'sk-...')`. Without a key, all features work using deterministic local scoring and mock rewrite suggestions. The API key is never bundled, committed, or sent anywhere except directly to OpenAI's endpoint from your browser.
 
 ## Architecture
 
@@ -174,5 +153,4 @@ src/
 ```
 
 ---
-
-Built for [Youth Code x AI 2026](https://youth-code-x-ai-29376.devpost.com/). Your voice is your competitive advantage. Keep it.
+Your voice is your competitive advantage. Keep it.

@@ -4,82 +4,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Light mode (default) ── */
 :root {
   --c-ink-navy:    249 247 244;
   --c-chart-paper: 255 255 255;
-  --c-brass:       184 134 58;
-  --c-signal-cyan: 45 159 131;
-  --c-alert-coral: 196 87 74;
-  --c-slate-text:  107 102 95;
-  --c-ink-text:    45 42 38;
+  --c-brass:       164 122 52;
+  --c-signal-cyan: 55 142 118;
+  --c-alert-coral: 176 77 64;
+  --c-slate-text:  115 110 102;
+  --c-ink-text:    50 46 40;
   --c-warm-bg:     244 241 236;
-  --c-card-border: 232 229 224;
+  --c-card-border: 228 224 218;
 
-  /* full-hex vars for inline styles */
   --hex-bg:       #F9F7F4;
   --hex-card:     #FFFFFF;
-  --hex-ink-text: #2D2A26;
-  --hex-body:     #6B665F;
-  --hex-brass:    #B8863A;
-  --hex-cyan:     #2D9F83;
-  --hex-coral:    #C4574A;
-  --hex-border:   #E8E5E0;
+  --hex-ink-text: #322E28;
+  --hex-body:     #736E66;
+  --hex-brass:    #A47A34;
+  --hex-cyan:     #378E76;
+  --hex-coral:    #B04D40;
+  --hex-border:   #E4E0DA;
   --hex-muted:    #D4CFC6;
 
-  --scrollbar-thumb: rgba(0,0,0,0.12);
-  --scrollbar-hover: rgba(0,0,0,0.2);
-  --selection-fg:    white;
+  --scrollbar-thumb: rgba(0,0,0,0.10);
+  --scrollbar-hover: rgba(0,0,0,0.18);
+  --selection-fg: white;
 }
 
-/* ── Dark mode ── */
 .dark {
-  --c-ink-navy:    26 31 46;
-  --c-chart-paper: 34 40 56;
-  --c-brass:       201 138 62;
-  --c-signal-cyan: 79 216 196;
-  --c-alert-coral: 226 96 79;
-  --c-slate-text:  180 188 200;
-  --c-ink-text:    232 229 224;
-  --c-warm-bg:     30 35 51;
-  --c-card-border: 55 62 80;
+  --c-ink-navy:    24 28 40;
+  --c-chart-paper: 32 36 50;
+  --c-brass:       186 146 72;
+  --c-signal-cyan: 80 190 165;
+  --c-alert-coral: 200 95 80;
+  --c-slate-text:  170 176 186;
+  --c-ink-text:    225 222 216;
+  --c-warm-bg:     28 32 45;
+  --c-card-border: 50 55 70;
 
-  --hex-bg:       #1A1F2E;
-  --hex-card:     #222838;
-  --hex-ink-text: #E8E5E0;
-  --hex-body:     #B4BCC8;
-  --hex-brass:    #C98A3E;
-  --hex-cyan:     #4FD8C4;
-  --hex-coral:    #E2604F;
-  --hex-border:   #373E50;
-  --hex-muted:    #3A4155;
+  --hex-bg:       #181C28;
+  --hex-card:     #202432;
+  --hex-ink-text: #E1DED8;
+  --hex-body:     #AAB0BA;
+  --hex-brass:    #BA9248;
+  --hex-cyan:     #50BEA5;
+  --hex-coral:    #C85F50;
+  --hex-border:   #323746;
+  --hex-muted:    #3A4050;
 
-  --scrollbar-thumb: rgba(255,255,255,0.1);
-  --scrollbar-hover: rgba(255,255,255,0.2);
-  --selection-fg:    #1A1F2E;
+  --scrollbar-thumb: rgba(255,255,255,0.08);
+  --scrollbar-hover: rgba(255,255,255,0.15);
+  --selection-fg: #181C28;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  height: 100%;
-  width: 100%;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #root { height: 100%; width: 100%; }
 
 body {
   margin: 0;
   background: rgb(var(--c-ink-navy));
   color: rgb(var(--c-slate-text));
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 h1, h2, h3 {
@@ -88,131 +77,75 @@ h1, h2, h3 {
   color: rgb(var(--c-ink-text));
 }
 
-code, pre, .font-mono {
-  font-family: 'IBM Plex Mono', monospace;
-}
+code, pre, .font-mono { font-family: 'IBM Plex Mono', monospace; }
 
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
   outline: 2px solid rgb(var(--c-brass));
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
-::selection {
-  background-color: rgb(var(--c-brass));
-  color: var(--selection-fg);
-}
+::selection { background-color: rgb(var(--c-brass)); color: var(--selection-fg); }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-hover);
-}
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
 @layer components {
   .tab-button {
-    @apply px-4 py-2.5 text-sm font-medium transition-all rounded-xl border-b-2;
+    @apply px-3 py-2 text-sm transition-colors border-b-2;
   }
   .tab-button-active {
-    @apply text-brass border-brass bg-brass/10;
+    @apply text-ink-text border-ink-text font-medium;
   }
   .tab-button-inactive {
-    @apply text-slate-text/60 border-transparent hover:text-ink-text hover:bg-ink-text/[0.03];
+    @apply text-slate-text/50 border-transparent hover:text-ink-text;
   }
   .card-panel {
-    @apply bg-chart-paper border border-card-border rounded-2xl p-5 shadow-sm;
+    @apply bg-chart-paper border border-card-border rounded-lg p-4;
   }
   .drift-aligned {
-    @apply bg-signal-cyan/[0.06] border-l-2 border-signal-cyan/50 rounded-r-xl;
+    @apply bg-signal-cyan/[0.05] border-l-2 border-signal-cyan/40 pl-3;
   }
   .drift-slight {
-    @apply bg-brass/[0.06] border-l-2 border-brass/50 rounded-r-xl;
+    @apply bg-brass/[0.05] border-l-2 border-brass/40 pl-3;
   }
   .drift-heavy {
-    @apply bg-alert-coral/[0.06] border-l-2 border-alert-coral/50 rounded-r-xl;
+    @apply bg-alert-coral/[0.05] border-l-2 border-alert-coral/40 pl-3;
   }
   .btn-primary {
-    @apply px-5 py-2.5 bg-brass text-white font-semibold hover:bg-brass/90 transition-all rounded-xl shadow-sm;
+    @apply px-4 py-2 bg-brass text-white font-medium hover:bg-brass/85 transition-colors rounded-lg text-sm;
   }
   .btn-secondary {
-    @apply px-5 py-2.5 border border-card-border text-slate-text hover:bg-warm-bg text-sm transition-all rounded-xl;
+    @apply px-4 py-2 border border-card-border text-slate-text hover:bg-warm-bg text-sm transition-colors rounded-lg;
   }
   .btn-ghost {
-    @apply px-3 py-1.5 text-sm text-signal-cyan hover:bg-signal-cyan/10 transition-all rounded-xl;
+    @apply px-2 py-1 text-sm text-brass hover:bg-brass/5 transition-colors rounded-md;
   }
 }
 
 .tab-content-enter {
-  animation: fade-in 0.3s ease-out;
+  animation: fade-in 0.2s ease-out;
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Tab slide transitions */
-@keyframes slide-from-right {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes slide-from-left {
-  from { opacity: 0; transform: translateX(-24px); }
-  to   { opacity: 1; transform: translateX(0); }
+.tab-slide-from-right, .tab-slide-from-left {
+  animation: fade-in 0.2s ease-out both;
 }
 
-.tab-slide-from-right {
-  animation: slide-from-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.tab-slide-from-left {
-  animation: slide-from-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
 
-/* Hide scrollbar on tab bar */
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
-
-/* Mobile responsive overrides */
 @media (max-width: 640px) {
-  .card-panel {
-    padding: 1rem;
-  }
+  .card-panel { padding: 0.875rem; }
 }

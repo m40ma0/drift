@@ -217,7 +217,7 @@ export function AboutTab({ onGetStarted }: AboutTabProps) {
               { step: '4', title: 'See where your voice drifted', desc: "Every sentence gets scored against your fingerprint. You'll see exactly which sentences sound like you, which don't, and why." },
             ].map((item) => (
               <div key={item.step}
-                className={`step-card flex gap-5 items-start rounded-2xl p-5 ${isVisible('how') ? 'revealed' : ''}`}
+                className={`step-card flex gap-5 items-start rounded-lg p-5 ${isVisible('how') ? 'revealed' : ''}`}
                 style={{ background: 'var(--hex-card)', border: '1px solid var(--hex-border)' }}>
                 <div className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-lg font-bold"
                   style={{ background: 'var(--hex-brass)', color: '#FFFFFF' }}>
@@ -255,7 +255,7 @@ export function AboutTab({ onGetStarted }: AboutTabProps) {
       {/* 7 — CTA */}
       <section className="about-section" data-section="cta">
         <div className={`max-w-xl mx-auto text-center slide-scale ${isVisible('cta') ? 'revealed' : ''}`}>
-          <div className="rounded-2xl p-10 md:p-14" style={{ background: 'var(--hex-card)', border: '1px solid var(--hex-border)' }}>
+          <div className="rounded-lg p-10 md:p-14" style={{ background: 'var(--hex-card)', border: '1px solid var(--hex-border)' }}>
             <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: 'var(--hex-ink-text)' }}>
               Ready to hear your own voice again?
             </h2>
