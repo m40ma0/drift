@@ -150,7 +150,7 @@ export function EditorTab({ activeProfile, activeHeadingId, activeProfileName, o
         <p className="text-slate-text text-sm max-w-sm text-center leading-relaxed">
           Drift needs writing samples to build your voice fingerprint. Load a demo to try it, or create your own in Voice Profile.
         </p>
-        <button onClick={onLoadDemo} className="btn-primary">Load demo voice</button>
+        <button onClick={async () => { await loadDemoData(); onLoadDemo(); setDemoStep(2); showToast('5 demo voice profiles loaded'); }} className="btn-primary">Load demo voice</button>
       </div>
     );
   }
