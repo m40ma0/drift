@@ -87,7 +87,7 @@ Explains the mission. Scroll-snapping full-screen sections with intersection-obs
 - **Worker**: Web Worker for non-blocking live scoring
 - **Storage**: IndexedDB via idb-keyval (local, no account required)
 - **Export**: html-to-image for PNG card generation
-- **LLM (optional)**: OpenAI API for voice-aware rewrites (falls back to deterministic mock)
+- **LLM (optional)**: Gemini or OpenAI for voice-aware rewrites (falls back to deterministic mock)
 
 ## Local Setup
 
@@ -97,6 +97,18 @@ npm run dev
 ```
 
 Open http://localhost:5173
+
+### Enable AI rewrites (optional)
+
+Create a `.env.local` file in the project root:
+
+```env
+# Use one or both — Gemini is checked first
+VITE_GEMINI_KEY=AIzaSy...
+# VITE_OPENAI_KEY=sk-...
+```
+
+Restart the dev server after adding the file. Without a key, everything works using local mock rewrites.
 
 ## Docker Setup
 
@@ -128,7 +140,7 @@ Voice Calibration proves the system works: it holds back one of your samples, bu
 
 **Local by default.** Writing samples, voice profiles, drift history, and receipts are stored in IndexedDB in your browser. Nothing is transmitted to any server.
 
-Text is sent to OpenAI **only** if you explicitly add an API key via `localStorage.setItem('drift-openai-key', 'sk-...')`. Without a key, all features work using deterministic local scoring and mock rewrite suggestions. The API key is never bundled, committed, or sent anywhere except directly to OpenAI's endpoint from your browser.
+Draft text is sent to Gemini or OpenAI **only** if you explicitly provide an API key (via `.env.local` or localStorage). Without a key, all features — scoring, analysis, calibration, compare — work fully offline using deterministic local computation. The API key is stored in `.env.local` (gitignored, never committed) or in your browser's localStorage. It is sent only to the respective API endpoint, nowhere else.
 
 ## Architecture
 
